@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="PetSureModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'PetSure.dbo.VethubClaims' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="VethubClaims">
+          <Key>
+            <PropertyRef Name="PolicyNumber" />
+            <PropertyRef Name="PolicyHolder" />
+            <PropertyRef Name="PetName" />
+            <PropertyRef Name="VetPractise" />
+            <PropertyRef Name="Amount" />
+            <PropertyRef Name="Microchip" />
+            <PropertyRef Name="VethubRefNo" />
+            <PropertyRef Name="ClaimRefNo" />
+            <PropertyRef Name="ClaimNo" />
+            <PropertyRef Name="Status" />
+            <PropertyRef Name="DateSubmitted" />
+          </Key>
+          <Property Name="PolicyNumber" Type="int" Nullable="false" />
+          <Property Name="PolicyHolder" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PetName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="VetPractise" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Amount" Type="numeric" Precision="13" Scale="2" Nullable="false" />
+          <Property Name="Microchip" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="VethubRefNo" Type="int" Nullable="false" />
+          <Property Name="ClaimRefNo" Type="int" Nullable="false" />
+          <Property Name="ClaimNo" Type="int" Nullable="false" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="DateSubmitted" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="PetSureModelStoreContainer">
+          <EntitySet Name="VethubClaims" EntityType="Self.VethubClaims" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [VethubClaims].[PolicyNumber] AS [PolicyNumber], 
+    [VethubClaims].[PolicyHolder] AS [PolicyHolder], 
+    [VethubClaims].[PetName] AS [PetName], 
+    [VethubClaims].[VetPractise] AS [VetPractise], 
+    [VethubClaims].[Amount] AS [Amount], 
+    [VethubClaims].[Microchip] AS [Microchip], 
+    [VethubClaims].[VethubRefNo] AS [VethubRefNo], 
+    [VethubClaims].[ClaimRefNo] AS [ClaimRefNo], 
+    [VethubClaims].[ClaimNo] AS [ClaimNo], 
+    [VethubClaims].[Status] AS [Status], 
+    [VethubClaims].[DateSubmitted] AS [DateSubmitted]
+    FROM [dbo].[VethubClaims] AS [VethubClaims]</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="PetSureModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="VethubClaims">
+          <Key>
+            <PropertyRef Name="PolicyNumber" />
+            <PropertyRef Name="PolicyHolder" />
+            <PropertyRef Name="PetName" />
+            <PropertyRef Name="VetPractise" />
+            <PropertyRef Name="Amount" />
+            <PropertyRef Name="Microchip" />
+            <PropertyRef Name="VethubRefNo" />
+            <PropertyRef Name="ClaimRefNo" />
+            <PropertyRef Name="ClaimNo" />
+            <PropertyRef Name="Status" />
+            <PropertyRef Name="DateSubmitted" />
+          </Key>
+          <Property Name="PolicyNumber" Type="Int32" Nullable="false" />
+          <Property Name="PolicyHolder" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PetName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="VetPractise" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Amount" Type="Decimal" Precision="13" Scale="2" Nullable="false" />
+          <Property Name="Microchip" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="VethubRefNo" Type="Int32" Nullable="false" />
+          <Property Name="ClaimRefNo" Type="Int32" Nullable="false" />
+          <Property Name="ClaimNo" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DateSubmitted" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityContainer Name="PetSureEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="VethubClaims1" EntityType="PetSureModel.VethubClaims" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="PetSureModelStoreContainer" CdmEntityContainer="PetSureEntities">
+          <EntitySetMapping Name="VethubClaims1">
+            <EntityTypeMapping TypeName="PetSureModel.VethubClaims">
+              <MappingFragment StoreEntitySet="VethubClaims">
+                <ScalarProperty Name="PolicyNumber" ColumnName="PolicyNumber" />
+                <ScalarProperty Name="PolicyHolder" ColumnName="PolicyHolder" />
+                <ScalarProperty Name="PetName" ColumnName="PetName" />
+                <ScalarProperty Name="VetPractise" ColumnName="VetPractise" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="Microchip" ColumnName="Microchip" />
+                <ScalarProperty Name="VethubRefNo" ColumnName="VethubRefNo" />
+                <ScalarProperty Name="ClaimRefNo" ColumnName="ClaimRefNo" />
+                <ScalarProperty Name="ClaimNo" ColumnName="ClaimNo" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="DateSubmitted" ColumnName="DateSubmitted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
