@@ -25,6 +25,6 @@ namespace PetSure
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<VethubClaims> VethubClaims1 { get; set; }
+        public virtual DbSet<VethubClaims> VethubClaims { get; set; }
     }
 }

@@ -10,9 +10,12 @@ namespace PetSure.Controllers
     public class VetHubController : ApiController
     {
         public IEnumerable<VethubClaims> Get() {
-            using (PetSureEntities entities = new PetSureEntities())
+            PetSureEntities entities = new PetSureEntities();
             {
-                return entities.VethubClaims1.ToList();
+                //var product = products.FirstOrDefault((p) => p.Id == id);
+                var items = entities.VethubClaims;
+                return items.ToList();
+
             }
         }
     }
