@@ -7,17 +7,25 @@ using System.Web.Http;
 
 namespace PetSure.Controllers
 {
-    public class GeoPoint
-    {
-        public double Latitude { get; set; }
-        public double Longitude { get; set; }
-    }
 
     public class VetHubController : ApiController
     {
-        public HttpResponseMessage Get([FromUri] int id)
+        public class VethubQuery {
+            public int PolicyNumber{ get; set;}
+            public string PolicyHolder{ get; set;}
+            public string VetPractice{ get; set;}
+            public string PetName{ get; set;}
+            public string Status{ get; set;}
+            public int VethubRefNo{ get; set;}
+            public int ClaimRefNo{ get; set;}
+            public int ClaimNo{ get; set;}
+            public string Start{ get; set;}
+            public string End{ get; set;}
+        }
+
+        public HttpResponseMessage Get([FromUri] VethubQuery search)
         {
-            HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK, id);
+            HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK, search);
             return response;
         }
 
