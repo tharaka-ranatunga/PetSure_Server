@@ -7,33 +7,20 @@ using System.Web.Http;
 
 namespace PetSure.Controllers
 {
-    //[Authorize]
+    public class GeoPoint
+    {
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+    }
+
     public class VetHubController : ApiController
     {
-        // GET api/values
-        public IEnumerable<string> Get()
+        public HttpResponseMessage Get([FromUri] int id)
         {
-            return new string[] { "value1", "value2" };
+            HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK, id);
+            return response;
         }
 
-        // GET api/values/5
-        public string Get(int id)
-        {
-
-            PetSureEntities entities = new PetSureEntities();
-            var product = entities.VethubClaims.FirstOrDefault(p => p.PolicyNumber == id);
-
-
-            return "teer";
-
-            //{
-            //    var product = entities.VethubClaims.FirstOrDefault(p => p.PolicyNumber == amount);
-            //    return product;
-
-            //}
-        }
-
-        // POST api/values
         public void Post([FromBody]string value)
         {
         }
