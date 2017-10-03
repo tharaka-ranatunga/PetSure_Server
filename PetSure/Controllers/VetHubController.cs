@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -23,10 +24,56 @@ namespace PetSure.Controllers
             public string End{ get; set;}
         }
 
+        private Boolean validate()
+        {
+            return true;
+        }
+
         public HttpResponseMessage Get([FromUri] VethubQuery search)
         {
+            Dictionary<string, string> Pairs = new Dictionary<string, string>();
+
+            if (!String.IsNullOrWhiteSpace(search.PolicyHolder)){Pairs.Add("PolicyNumber", search.PolicyHolder);}
+             
+            if (!String.IsNullOrWhiteSpace(search.PolicyHolder))
+            {
+                Pairs.Add("PolicyHolder", search.PolicyHolder);
+            }
+            if (!String.IsNullOrWhiteSpace(search.PolicyHolder))
+            {
+                Pairs.Add("VetPractice", search.PolicyHolder);
+            }
+            if (!String.IsNullOrWhiteSpace(search.PolicyHolder))
+            {
+                Pairs.Add("PetName", search.PolicyHolder);
+            }
+            if (!String.IsNullOrWhiteSpace(search.PolicyHolder))
+            {
+                Pairs.Add("Status", search.PolicyHolder);
+            }
+            if (!String.IsNullOrWhiteSpace(search.PolicyHolder))
+            {
+                Pairs.Add("VethubRefNo", search.PolicyHolder);
+            }
+            if (!String.IsNullOrWhiteSpace(search.PolicyHolder))
+            {
+                Pairs.Add("ClaimRefNo", search.PolicyHolder);
+            }
+            if (!String.IsNullOrWhiteSpace(search.PolicyHolder))
+            {
+                Pairs.Add("ClaimNo", search.PolicyHolder);
+            }
+            if (!String.IsNullOrWhiteSpace(search.PolicyHolder))
+            {
+                Pairs.Add("Start", search.PolicyHolder);
+            }
+            if (!String.IsNullOrWhiteSpace(search.PolicyHolder))
+            {
+                Pairs.Add("End", search.PolicyHolder);
+            }
+
             HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK, search);
-            return response;
+                return response;
         }
 
         public void Post([FromBody]string value)
