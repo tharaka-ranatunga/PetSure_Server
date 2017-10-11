@@ -9,29 +9,26 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using PetSure_Server.Models;
-using System.Linq.Dynamic;
-using System.Collections;
 
 namespace PetSure_Server.Controllers
 {
     public class VethubClaimsController : ApiController
     {
+        private PetSureEntities db = new PetSureEntities();
+
         public class VethubQuery
         {
-            public string PolicyNumber { get; set; }
+            public int PolicyNumber { get; set; }
             public string PolicyHolder { get; set; }
             public string VetPractice { get; set; }
             public string PetName { get; set; }
             public string Status { get; set; }
-            public string VethubRefNo { get; set; }
-            public string ClaimRefNo { get; set; }
-            public string ClaimNo { get; set; }
-            public string Start { get; set; }
-            public string End { get; set; }
+            public int VethubRefNo { get; set; }
+            public int ClaimRefNo { get; set; }
+            public int ClaimNo { get; set; }
+            public DateTime Start { get; set; }
+            public DateTime End { get; set; }
         }
-
-
-        private PetSureEntities db = new PetSureEntities();
 
         // GET: api/VethubClaims
         //public IQueryable<VethubClaim> GetVethubClaims()
@@ -41,44 +38,19 @@ namespace PetSure_Server.Controllers
 
         // GET: api/VethubClaims/5
         [ResponseType(typeof(VethubClaim))]
-        public IHttpActionResult GetVethubClaim([FromUri] VethubQuery search)
+        public IHttpActionResult GetVethubClaim([FromUri] VethubQuery query)
         {
-            IDictionary<int, string> numbers = new Dictionary<int, string>();
-
-            //ArrayList numbers = new ArrayList();
-            if (!string.IsNullOrWhiteSpace(search.PolicyNumber)){ numbers.Add(0, "PolicyNumber"); }
-            if (!string.IsNullOrWhiteSpace(search.PolicyHolder)) { numbers.Add(1,"PolicyHolder"); }
-            if (!string.IsNullOrWhiteSpace(search.PetName)) { numbers.Add(2, "PetName"); }
-            if (!string.IsNullOrWhiteSpace(search.VetPractice)) { numbers.Add(3,"VetPractise"); }
-            if (!string.IsNullOrWhiteSpace(search.Status)) { numbers.Add(4,"Status"); }
-            if (!string.IsNullOrWhiteSpace(search.VethubRefNo)) { numbers.Add(5,"VethubRefNo"); }
-            if (!string.IsNullOrWhiteSpace(search.ClaimRefNo)) { numbers.Add(6,"ClaimRefNo"); }
-            if (!string.IsNullOrWhiteSpace(search.ClaimNo)) { numbers.Add(7,"ClaimNo"); }
-            if (!string.IsNullOrWhiteSpace(search.Start)) { numbers.Add(8,"Start"); }
-            if (!string.IsNullOrWhiteSpace(search.End)) { numbers.Add(9,"End"); }
-
-            string query = string.Empty;
-
-            foreach (KeyValuePair<int, string> entry in numbers )
-            {
-                query = query + entry.Value+"=@"+ entry.Key + " and ";
-            }
-
-            string name = query.Substring(0, query.Length - 5);
-
-            System.Diagnostics.Debug.WriteLine(query);
-            System.Diagnostics.Debug.WriteLine(name);
-
-
-
-            var vethubClaim = db.VethubClaims.Where(name, Convert.ToInt32(search.PolicyNumber), search.PolicyHolder, search.PetName).ToList();
-
-            if (vethubClaim == null)
+            DateTime date1 = new DateTime(2017, 1, 10);
+            DateTime date2 = new DateTime(2017, 4, 10);
+            var result = db.getVethubClaims(null, query.PolicyHolder, "test", "scooby", "in progress", 100, 200, 300, date1 , date2 ,0,10, "PetName").ToList();
+            //var result = db.getAllVethubClaims().ToList();
+            //VethubClaim vethubClaim = db.VethubClaims.Find(id);
+            if (result == null)
             {
                 return NotFound();
             }
 
-            return Ok(vethubClaim);
+            return Ok(result);
         }
 
         // PUT: api/VethubClaims/5

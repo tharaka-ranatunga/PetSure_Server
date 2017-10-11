@@ -12,6 +12,8 @@ namespace PetSure_Server.Models
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Core.Objects;
+    using System.Linq;
     
     public partial class PetSureEntities : DbContext
     {
@@ -26,5 +28,67 @@ namespace PetSure_Server.Models
         }
     
         public virtual DbSet<VethubClaim> VethubClaims { get; set; }
+    
+        public virtual ObjectResult<getAllVethubClaims_Result> getAllVethubClaims()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<getAllVethubClaims_Result>("getAllVethubClaims");
+        }
+    
+        public virtual ObjectResult<getVethubClaims_Result> getVethubClaims(Nullable<int> policyNumber, string policyHolder, string vetPractise, string petName, string status, Nullable<int> vethubRefNo, Nullable<int> claimRefNo, Nullable<int> claimNo, Nullable<System.DateTime> startDate, Nullable<System.DateTime> endDate, Nullable<int> startIndex, Nullable<int> endIndex, string sort)
+        {
+            var policyNumberParameter = policyNumber.HasValue ?
+                new ObjectParameter("PolicyNumber", policyNumber) :
+                new ObjectParameter("PolicyNumber", typeof(int));
+    
+            var policyHolderParameter = policyHolder != null ?
+                new ObjectParameter("PolicyHolder", policyHolder) :
+                new ObjectParameter("PolicyHolder", typeof(string));
+    
+            var vetPractiseParameter = vetPractise != null ?
+                new ObjectParameter("VetPractise", vetPractise) :
+                new ObjectParameter("VetPractise", typeof(string));
+    
+            var petNameParameter = petName != null ?
+                new ObjectParameter("PetName", petName) :
+                new ObjectParameter("PetName", typeof(string));
+    
+            var statusParameter = status != null ?
+                new ObjectParameter("Status", status) :
+                new ObjectParameter("Status", typeof(string));
+    
+            var vethubRefNoParameter = vethubRefNo.HasValue ?
+                new ObjectParameter("VethubRefNo", vethubRefNo) :
+                new ObjectParameter("VethubRefNo", typeof(int));
+    
+            var claimRefNoParameter = claimRefNo.HasValue ?
+                new ObjectParameter("ClaimRefNo", claimRefNo) :
+                new ObjectParameter("ClaimRefNo", typeof(int));
+    
+            var claimNoParameter = claimNo.HasValue ?
+                new ObjectParameter("ClaimNo", claimNo) :
+                new ObjectParameter("ClaimNo", typeof(int));
+    
+            var startDateParameter = startDate.HasValue ?
+                new ObjectParameter("StartDate", startDate) :
+                new ObjectParameter("StartDate", typeof(System.DateTime));
+    
+            var endDateParameter = endDate.HasValue ?
+                new ObjectParameter("EndDate", endDate) :
+                new ObjectParameter("EndDate", typeof(System.DateTime));
+    
+            var startIndexParameter = startIndex.HasValue ?
+                new ObjectParameter("StartIndex", startIndex) :
+                new ObjectParameter("StartIndex", typeof(int));
+    
+            var endIndexParameter = endIndex.HasValue ?
+                new ObjectParameter("EndIndex", endIndex) :
+                new ObjectParameter("EndIndex", typeof(int));
+    
+            var sortParameter = sort != null ?
+                new ObjectParameter("Sort", sort) :
+                new ObjectParameter("Sort", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<getVethubClaims_Result>("getVethubClaims", policyNumberParameter, policyHolderParameter, vetPractiseParameter, petNameParameter, statusParameter, vethubRefNoParameter, claimRefNoParameter, claimNoParameter, startDateParameter, endDateParameter, startIndexParameter, endIndexParameter, sortParameter);
+        }
     }
 }

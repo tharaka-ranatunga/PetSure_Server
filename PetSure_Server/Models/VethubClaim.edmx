@@ -21,6 +21,22 @@
           <Property Name="Status" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="DateSubmitted" Type="datetime" Nullable="false" />
         </EntityType>
+        <Function Name="getAllVethubClaims" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="getVethubClaims" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="PolicyNumber" Type="int" Mode="In" />
+          <Parameter Name="PolicyHolder" Type="varchar" Mode="In" />
+          <Parameter Name="VetPractise" Type="varchar" Mode="In" />
+          <Parameter Name="PetName" Type="varchar" Mode="In" />
+          <Parameter Name="Status" Type="varchar" Mode="In" />
+          <Parameter Name="VethubRefNo" Type="int" Mode="In" />
+          <Parameter Name="ClaimRefNo" Type="int" Mode="In" />
+          <Parameter Name="ClaimNo" Type="int" Mode="In" />
+          <Parameter Name="StartDate" Type="date" Mode="In" />
+          <Parameter Name="EndDate" Type="date" Mode="In" />
+          <Parameter Name="StartIndex" Type="int" Mode="In" />
+          <Parameter Name="EndIndex" Type="int" Mode="In" />
+          <Parameter Name="Sort" Type="varchar" Mode="In" />
+        </Function>
         <EntityContainer Name="VethubClaimStoreContainer">
           <EntitySet Name="VethubClaims" EntityType="Self.VethubClaims" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
@@ -47,7 +63,49 @@
         </EntityType>
         <EntityContainer Name="PetSureEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="VethubClaims" EntityType="Self.VethubClaim" />
+          <FunctionImport Name="getAllVethubClaims" ReturnType="Collection(VethubClaim.getAllVethubClaims_Result)" />
+          <FunctionImport Name="getVethubClaims" ReturnType="Collection(VethubClaim.getVethubClaims_Result)">
+            <Parameter Name="PolicyNumber" Mode="In" Type="Int32" />
+            <Parameter Name="PolicyHolder" Mode="In" Type="String" />
+            <Parameter Name="VetPractise" Mode="In" Type="String" />
+            <Parameter Name="PetName" Mode="In" Type="String" />
+            <Parameter Name="Status" Mode="In" Type="String" />
+            <Parameter Name="VethubRefNo" Mode="In" Type="Int32" />
+            <Parameter Name="ClaimRefNo" Mode="In" Type="Int32" />
+            <Parameter Name="ClaimNo" Mode="In" Type="Int32" />
+            <Parameter Name="StartDate" Mode="In" Type="DateTime" />
+            <Parameter Name="EndDate" Mode="In" Type="DateTime" />
+            <Parameter Name="StartIndex" Mode="In" Type="Int32" />
+            <Parameter Name="EndIndex" Mode="In" Type="Int32" />
+            <Parameter Name="Sort" Mode="In" Type="String" />
+          </FunctionImport>
         </EntityContainer>
+        <ComplexType Name="getAllVethubClaims_Result">
+          <Property Type="Int32" Name="PolicyNumber" Nullable="false" />
+          <Property Type="String" Name="PolicyHolder" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="PetName" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="VetPractise" Nullable="false" MaxLength="50" />
+          <Property Type="Decimal" Name="Amount" Nullable="false" Precision="13" Scale="2" />
+          <Property Type="String" Name="Microchip" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="VethubRefNo" Nullable="false" />
+          <Property Type="Int32" Name="ClaimRefNo" Nullable="false" />
+          <Property Type="Int32" Name="ClaimNo" Nullable="false" />
+          <Property Type="String" Name="Status" Nullable="false" MaxLength="50" />
+          <Property Type="DateTime" Name="DateSubmitted" Nullable="false" Precision="23" />
+        </ComplexType>
+        <ComplexType Name="getVethubClaims_Result">
+          <Property Type="Int32" Name="PolicyNumber" Nullable="false" />
+          <Property Type="String" Name="PolicyHolder" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="PetName" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="VetPractise" Nullable="false" MaxLength="50" />
+          <Property Type="Decimal" Name="Amount" Nullable="false" Precision="13" Scale="2" />
+          <Property Type="String" Name="Microchip" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="VethubRefNo" Nullable="false" />
+          <Property Type="Int32" Name="ClaimRefNo" Nullable="false" />
+          <Property Type="Int32" Name="ClaimNo" Nullable="false" />
+          <Property Type="String" Name="Status" Nullable="false" MaxLength="50" />
+          <Property Type="DateTime" Name="DateSubmitted" Nullable="false" Precision="23" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -71,6 +129,40 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="getAllVethubClaims" FunctionName="VethubClaim.Store.getAllVethubClaims">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="VethubClaim.getAllVethubClaims_Result">
+                <ScalarProperty Name="PolicyNumber" ColumnName="PolicyNumber" />
+                <ScalarProperty Name="PolicyHolder" ColumnName="PolicyHolder" />
+                <ScalarProperty Name="PetName" ColumnName="PetName" />
+                <ScalarProperty Name="VetPractise" ColumnName="VetPractise" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="Microchip" ColumnName="Microchip" />
+                <ScalarProperty Name="VethubRefNo" ColumnName="VethubRefNo" />
+                <ScalarProperty Name="ClaimRefNo" ColumnName="ClaimRefNo" />
+                <ScalarProperty Name="ClaimNo" ColumnName="ClaimNo" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="DateSubmitted" ColumnName="DateSubmitted" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="getVethubClaims" FunctionName="VethubClaim.Store.getVethubClaims">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="VethubClaim.getVethubClaims_Result">
+                <ScalarProperty Name="PolicyNumber" ColumnName="PolicyNumber" />
+                <ScalarProperty Name="PolicyHolder" ColumnName="PolicyHolder" />
+                <ScalarProperty Name="PetName" ColumnName="PetName" />
+                <ScalarProperty Name="VetPractise" ColumnName="VetPractise" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="Microchip" ColumnName="Microchip" />
+                <ScalarProperty Name="VethubRefNo" ColumnName="VethubRefNo" />
+                <ScalarProperty Name="ClaimRefNo" ColumnName="ClaimRefNo" />
+                <ScalarProperty Name="ClaimNo" ColumnName="ClaimNo" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="DateSubmitted" ColumnName="DateSubmitted" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

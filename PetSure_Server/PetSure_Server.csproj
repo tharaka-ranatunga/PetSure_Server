@@ -221,6 +221,12 @@
     </Compile>
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\getAllVethubClaims_Result.cs">
+      <DependentUpon>VethubClaim.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\getVethubClaims_Result.cs">
+      <DependentUpon>VethubClaim.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\VethubClaim.Context.cs">
       <AutoGen>True</AutoGen>
@@ -234,6 +240,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>VethubClaim.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\VethubClaim1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>VethubClaim.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
