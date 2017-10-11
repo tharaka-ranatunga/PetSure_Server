@@ -18,16 +18,16 @@ namespace PetSure_Server.Controllers
 
         public class VethubQuery
         {
-            public int PolicyNumber { get; set; }
+            public string PolicyNumber { get; set; }
             public string PolicyHolder { get; set; }
             public string VetPractice { get; set; }
             public string PetName { get; set; }
             public string Status { get; set; }
-            public int VethubRefNo { get; set; }
-            public int ClaimRefNo { get; set; }
-            public int ClaimNo { get; set; }
-            public DateTime Start { get; set; }
-            public DateTime End { get; set; }
+            public string VethubRefNo { get; set; }
+            public string ClaimRefNo { get; set; }
+            public string ClaimNo { get; set; }
+            public string Start { get; set; }
+            public string End { get; set; }
         }
 
         // GET: api/VethubClaims
@@ -42,7 +42,21 @@ namespace PetSure_Server.Controllers
         {
             DateTime date1 = new DateTime(2017, 1, 10);
             DateTime date2 = new DateTime(2017, 4, 10);
-            var result = db.getVethubClaims(null, query.PolicyHolder, "test", "scooby", "in progress", 100, 200, 300, date1 , date2 ,0,10, "PetName").ToList();
+            Nullable<int> policyNumber = null;
+            Nullable<int> vethubRefNo = null;
+            Nullable<int> claimRefNo = null;
+            Nullable<int> claimNo = null;
+            Nullable<DateTime> startDate = null;
+            Nullable<DateTime> endDate = null;
+
+            if (!string.IsNullOrWhiteSpace(query.PolicyNumber)) { policyNumber = Convert.ToInt32(query.PolicyNumber); }
+            if (!string.IsNullOrWhiteSpace(query.VethubRefNo)) { vethubRefNo = Convert.ToInt32(query.VethubRefNo); }
+            if (!string.IsNullOrWhiteSpace(query.ClaimRefNo)) { claimRefNo = Convert.ToInt32(query.ClaimRefNo); }
+            if (!string.IsNullOrWhiteSpace(query.ClaimNo)) { claimNo = Convert.ToInt32(query.ClaimNo); }
+            if (!string.IsNullOrWhiteSpace(query.Start)) { startDate = Convert.ToDateTime(query.Start); }
+            if (!string.IsNullOrWhiteSpace(query.End)) { endDate = Convert.ToDateTime(query.End); }
+
+            var result = db.getVethubClaims(policyNumber, query.PolicyHolder, query.VetPractice, query.PetName, query.Status, null, null, null, startDate , endDate ,0 ,10, "PetName").ToList();
             //var result = db.getAllVethubClaims().ToList();
             //VethubClaim vethubClaim = db.VethubClaims.Find(id);
             if (result == null)
