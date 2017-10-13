@@ -9,28 +9,30 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using PetSure_Server.Models;
+using System.Web.Http.Cors;
 
 namespace PetSure_Server.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class VethubClaimsController : ApiController
     {
         private PetSureEntities db = new PetSureEntities();
 
         public class VethubQuery
         {
-            public string PolicyNumber { get; set; }
-            public string PolicyHolder { get; set; }
-            public string VetPractice { get; set; }
-            public string PetName { get; set; }
-            public string Status { get; set; }
-            public string VethubRefNo { get; set; }
-            public string ClaimRefNo { get; set; }
-            public string ClaimNo { get; set; }
-            public string Start { get; set; }
-            public string End { get; set; }
-            public string StartIndex { get; set; }
-            public string EndIndex { get; set; }
-            public string Sort { get; set; }
+            public string policyNumber { get; set; }
+            public string policyHolder { get; set; }
+            public string vetPractice { get; set; }
+            public string petName { get; set; }
+            public string status { get; set; }
+            public string vetHubRef { get; set; }
+            public string claimRef { get; set; }
+            public string claim { get; set; }
+            public string dateSubmittedFrom { get; set; }
+            public string dateSubmittedTo { get; set; }
+            public string startIndex { get; set; }
+            public string endIndex { get; set; }
+            public string sort { get; set; }
         }
 
         // GET: api/VethubClaims
@@ -43,23 +45,27 @@ namespace PetSure_Server.Controllers
         [ResponseType(typeof(VethubClaim))]
         public IHttpActionResult GetVethubClaim([FromUri] VethubQuery query)
         {
-            DateTime date1 = new DateTime(2017, 1, 10);
-            DateTime date2 = new DateTime(2017, 4, 10);
+            //DateTime date1 = new DateTime(2017, 1, 10);
+            //DateTime date2 = new DateTime(2017, 4, 10);
             Nullable<int> policyNumber = null;
             Nullable<int> vethubRefNo = null;
             Nullable<int> claimRefNo = null;
             Nullable<int> claimNo = null;
+            Nullable<int> startIndex = null;
+            Nullable<int> endIndex = null;
             Nullable<DateTime> startDate = null;
             Nullable<DateTime> endDate = null;
 
-            if (!string.IsNullOrWhiteSpace(query.PolicyNumber)) { policyNumber = Convert.ToInt32(query.PolicyNumber); }
-            if (!string.IsNullOrWhiteSpace(query.VethubRefNo)) { vethubRefNo = Convert.ToInt32(query.VethubRefNo); }
-            if (!string.IsNullOrWhiteSpace(query.ClaimRefNo)) { claimRefNo = Convert.ToInt32(query.ClaimRefNo); }
-            if (!string.IsNullOrWhiteSpace(query.ClaimNo)) { claimNo = Convert.ToInt32(query.ClaimNo); }
-            if (!string.IsNullOrWhiteSpace(query.Start)) { startDate = Convert.ToDateTime(query.Start); }
-            if (!string.IsNullOrWhiteSpace(query.End)) { endDate = Convert.ToDateTime(query.End); }
+            if (!string.IsNullOrWhiteSpace(query.policyNumber)) { policyNumber = Convert.ToInt32(query.policyNumber); }
+            if (!string.IsNullOrWhiteSpace(query.vetHubRef)) { vethubRefNo = Convert.ToInt32(query.vetHubRef); }
+            if (!string.IsNullOrWhiteSpace(query.claimRef)) { claimRefNo = Convert.ToInt32(query.claimRef); }
+            if (!string.IsNullOrWhiteSpace(query.claim)) { claimNo = Convert.ToInt32(query.claim); }
+            if (!string.IsNullOrWhiteSpace(query.startIndex)) { startIndex = Convert.ToInt32(query.startIndex); }
+            if (!string.IsNullOrWhiteSpace(query.endIndex)) { endIndex = Convert.ToInt32(query.endIndex); }
+            if (!string.IsNullOrWhiteSpace(query.dateSubmittedFrom)) { startDate = Convert.ToDateTime(query.dateSubmittedFrom); }
+            if (!string.IsNullOrWhiteSpace(query.dateSubmittedTo)) { endDate = Convert.ToDateTime(query.dateSubmittedTo); }
 
-            var result = db.getVethubClaims(policyNumber, query.PolicyHolder, query.VetPractice, query.PetName, query.Status, null, null, null, startDate , endDate ,0 ,10, "petName asc");
+            var result = db.getVethubClaims(policyNumber, query.policyHolder, query.vetPractice, query.petName, query.status, vethubRefNo, claimRefNo, claimNo, startDate , endDate ,startIndex ,endIndex, query.sort);
         
             //var result = db.getAllVethubClaims().ToList();
             //VethubClaim vethubClaim = db.VethubClaims.Find(id);

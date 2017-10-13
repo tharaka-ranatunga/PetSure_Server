@@ -95,6 +95,7 @@
         </ComplexType>
         <ComplexType Name="getVethubClaims_Result">
           <Property Type="Int64" Name="RowNum" Nullable="true" />
+          <Property Type="Int32" Name="TotalCount" Nullable="true" />
           <Property Type="Int32" Name="policyNumber" Nullable="false" />
           <Property Type="String" Name="policyHolder" Nullable="false" MaxLength="50" />
           <Property Type="String" Name="petName" Nullable="false" MaxLength="50" />
@@ -151,6 +152,7 @@
             <ResultMapping>
               <ComplexTypeMapping TypeName="VethubClaim.getVethubClaims_Result">
                 <ScalarProperty Name="RowNum" ColumnName="RowNum" />
+                <ScalarProperty Name="TotalCount" ColumnName="TotalCount" />
                 <ScalarProperty Name="policyNumber" ColumnName="policyNumber" />
                 <ScalarProperty Name="policyHolder" ColumnName="policyHolder" />
                 <ScalarProperty Name="petName" ColumnName="petName" />

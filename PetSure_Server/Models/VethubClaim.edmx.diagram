@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="45732aef0b9f46509ac8633e312ebdb1" Name="Diagram1">
+      <Diagram DiagramId="1c13d47ed48c400085fdd4d0cef13174" Name="Diagram1">
         <EntityTypeShape EntityType="VethubClaim.VethubClaim" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
       </Diagram>
     </edmx:Diagrams>
