@@ -28,6 +28,9 @@ namespace PetSure_Server.Controllers
             public string ClaimNo { get; set; }
             public string Start { get; set; }
             public string End { get; set; }
+            public string StartIndex { get; set; }
+            public string EndIndex { get; set; }
+            public string Sort { get; set; }
         }
 
         // GET: api/VethubClaims
@@ -56,7 +59,7 @@ namespace PetSure_Server.Controllers
             if (!string.IsNullOrWhiteSpace(query.Start)) { startDate = Convert.ToDateTime(query.Start); }
             if (!string.IsNullOrWhiteSpace(query.End)) { endDate = Convert.ToDateTime(query.End); }
 
-            var result = db.getVethubClaims(policyNumber, query.PolicyHolder, query.VetPractice, query.PetName, query.Status, null, null, null, startDate , endDate ,0 ,10, "PetName").ToList();
+            var result = db.getVethubClaims(policyNumber, query.PolicyHolder, query.VetPractice, query.PetName, query.Status, null, null, null, startDate , endDate ,0 ,10, "petName asc");
         
             //var result = db.getAllVethubClaims().ToList();
             //VethubClaim vethubClaim = db.VethubClaims.Find(id);
@@ -77,7 +80,7 @@ namespace PetSure_Server.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (id != vethubClaim.PolicyNumber)
+            if (id != vethubClaim.policyNumber)
             {
                 return BadRequest();
             }
@@ -120,7 +123,7 @@ namespace PetSure_Server.Controllers
             }
             catch (DbUpdateException)
             {
-                if (VethubClaimExists(vethubClaim.PolicyNumber))
+                if (VethubClaimExists(vethubClaim.policyNumber))
                 {
                     return Conflict();
                 }
@@ -130,7 +133,7 @@ namespace PetSure_Server.Controllers
                 }
             }
 
-            return CreatedAtRoute("DefaultApi", new { id = vethubClaim.PolicyNumber }, vethubClaim);
+            return CreatedAtRoute("DefaultApi", new { id = vethubClaim.policyNumber }, vethubClaim);
         }
 
         // DELETE: api/VethubClaims/5
@@ -160,7 +163,7 @@ namespace PetSure_Server.Controllers
 
         private bool VethubClaimExists(int id)
         {
-            return db.VethubClaims.Count(e => e.PolicyNumber == id) > 0;
+            return db.VethubClaims.Count(e => e.policyNumber == id) > 0;
         }
     }
 }

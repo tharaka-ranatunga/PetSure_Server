@@ -13,16 +13,16 @@ namespace PetSure_Server.Models
     
     public partial class getAllVethubClaims_Result
     {
-        public int PolicyNumber { get; set; }
-        public string PolicyHolder { get; set; }
-        public string PetName { get; set; }
-        public string VetPractise { get; set; }
-        public decimal Amount { get; set; }
-        public string Microchip { get; set; }
-        public int VethubRefNo { get; set; }
-        public int ClaimRefNo { get; set; }
-        public int ClaimNo { get; set; }
-        public string Status { get; set; }
-        public System.DateTime DateSubmitted { get; set; }
+        public int policyNumber { get; set; }
+        public string policyHolder { get; set; }
+        public string petName { get; set; }
+        public string vetPractice { get; set; }
+        public decimal amount { get; set; }
+        public string microChip { get; set; }
+        public int vetHubRef { get; set; }
+        public int claimRef { get; set; }
+        public int claim { get; set; }
+        public string status { get; set; }
+        public System.DateTime dateSubmitted { get; set; }
     }
 }
