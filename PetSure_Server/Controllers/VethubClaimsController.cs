@@ -57,6 +57,7 @@ namespace PetSure_Server.Controllers
             if (!string.IsNullOrWhiteSpace(query.End)) { endDate = Convert.ToDateTime(query.End); }
 
             var result = db.getVethubClaims(policyNumber, query.PolicyHolder, query.VetPractice, query.PetName, query.Status, null, null, null, startDate , endDate ,0 ,10, "PetName").ToList();
+        
             //var result = db.getAllVethubClaims().ToList();
             //VethubClaim vethubClaim = db.VethubClaims.Find(id);
             if (result == null)
@@ -64,7 +65,7 @@ namespace PetSure_Server.Controllers
                 return NotFound();
             }
 
-            return Ok(result);
+            return Json(result);
         }
 
         // PUT: api/VethubClaims/5
