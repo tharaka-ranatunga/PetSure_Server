@@ -45,8 +45,7 @@ namespace PetSure_Server.Controllers
         [ResponseType(typeof(VethubClaim))]
         public IHttpActionResult GetVethubClaim([FromUri] VethubQuery query)
         {
-            //DateTime date1 = new DateTime(2017, 1, 10);
-            //DateTime date2 = new DateTime(2017, 4, 10);
+
             Nullable<int> policyNumber = null;
             Nullable<int> vethubRefNo = null;
             Nullable<int> claimRefNo = null;
@@ -66,9 +65,7 @@ namespace PetSure_Server.Controllers
             if (!string.IsNullOrWhiteSpace(query.dateSubmittedTo)) { endDate = Convert.ToDateTime(query.dateSubmittedTo); }
 
             var result = db.getVethubClaims(policyNumber, query.policyHolder, query.vetPractice, query.petName, query.status, vethubRefNo, claimRefNo, claimNo, startDate , endDate ,startIndex ,endIndex, query.sort);
-        
-            //var result = db.getAllVethubClaims().ToList();
-            //VethubClaim vethubClaim = db.VethubClaims.Find(id);
+      
             if (result == null)
             {
                 return NotFound();
