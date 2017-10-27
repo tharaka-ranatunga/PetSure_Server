@@ -17,7 +17,7 @@ namespace PetSure_Server.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public PolicyHolder()
         {
-            this.ph_vp_claim = new HashSet<ph_vp_claim>();
+            this.VethubClaims = new HashSet<VethubClaim>();
         }
     
         public string policyNumber { get; set; }
@@ -30,6 +30,6 @@ namespace PetSure_Server.Models
         public string phPhone { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ph_vp_claim> ph_vp_claim { get; set; }
+        public virtual ICollection<VethubClaim> VethubClaims { get; set; }
     }
 }

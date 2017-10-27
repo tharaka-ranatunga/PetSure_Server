@@ -29,25 +29,10 @@ namespace PetSure_Server.Models
     
         public virtual DbSet<ClaimDetail> ClaimDetails { get; set; }
         public virtual DbSet<PolicyHolder> PolicyHolders { get; set; }
-        public virtual DbSet<VethubClaim> VethubClaims { get; set; }
         public virtual DbSet<VetPractise> VetPractises { get; set; }
-        public virtual DbSet<ph_vp_claim> ph_vp_claim { get; set; }
+        public virtual DbSet<VethubClaim> VethubClaims { get; set; }
     
-        public virtual ObjectResult<getAllVethubClaims_Result> getAllVethubClaims()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<getAllVethubClaims_Result>("getAllVethubClaims");
-        }
-    
-        public virtual ObjectResult<getdetails_Result> getdetails(string policyNumber)
-        {
-            var policyNumberParameter = policyNumber != null ?
-                new ObjectParameter("PolicyNumber", policyNumber) :
-                new ObjectParameter("PolicyNumber", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<getdetails_Result>("getdetails", policyNumberParameter);
-        }
-    
-        public virtual ObjectResult<getVethubClaims_Result> getVethubClaims(Nullable<int> policyNumber, string policyHolder, string vetPractise, string petName, string status, Nullable<int> vethubRefNo, Nullable<int> claimRefNo, Nullable<int> claimNo, Nullable<System.DateTime> startDate, Nullable<System.DateTime> endDate, Nullable<int> startIndex, Nullable<int> endIndex, string sort)
+        public virtual ObjectResult<getClaims_Result> getClaims(Nullable<int> policyNumber, string policyHolder, string vetPractise, string petName, string status, Nullable<int> vethubRefNo, Nullable<int> claimRefNo, Nullable<int> claimNo, Nullable<System.DateTime> startDate, Nullable<System.DateTime> endDate, Nullable<int> startIndex, Nullable<int> endIndex, string sort)
         {
             var policyNumberParameter = policyNumber.HasValue ?
                 new ObjectParameter("PolicyNumber", policyNumber) :
@@ -101,7 +86,16 @@ namespace PetSure_Server.Models
                 new ObjectParameter("Sort", sort) :
                 new ObjectParameter("Sort", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<getVethubClaims_Result>("getVethubClaims", policyNumberParameter, policyHolderParameter, vetPractiseParameter, petNameParameter, statusParameter, vethubRefNoParameter, claimRefNoParameter, claimNoParameter, startDateParameter, endDateParameter, startIndexParameter, endIndexParameter, sortParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<getClaims_Result>("getClaims", policyNumberParameter, policyHolderParameter, vetPractiseParameter, petNameParameter, statusParameter, vethubRefNoParameter, claimRefNoParameter, claimNoParameter, startDateParameter, endDateParameter, startIndexParameter, endIndexParameter, sortParameter);
+        }
+    
+        public virtual ObjectResult<getDetails_Result> getDetails(string policyNumber)
+        {
+            var policyNumberParameter = policyNumber != null ?
+                new ObjectParameter("PolicyNumber", policyNumber) :
+                new ObjectParameter("PolicyNumber", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<getDetails_Result>("getDetails", policyNumberParameter);
         }
     }
 }

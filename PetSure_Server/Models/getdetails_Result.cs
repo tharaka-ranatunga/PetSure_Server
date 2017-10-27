@@ -11,7 +11,7 @@ namespace PetSure_Server.Models
 {
     using System;
     
-    public partial class getdetails_Result
+    public partial class getDetails_Result
     {
         public string policyHolderId { get; set; }
         public int claimDetailsId { get; set; }

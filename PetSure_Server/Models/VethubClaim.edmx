@@ -20,18 +20,6 @@
           <Property Name="claimStatus" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="claimSubmittedDate" Type="datetime" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'PetSure.dbo.ph_vp_claim' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
-        <EntityType Name="ph_vp_claim">
-          <Key>
-            <PropertyRef Name="policyHolderId" />
-            <PropertyRef Name="claimDetailsId" />
-            <PropertyRef Name="vetPractiseId" />
-          </Key>
-          <Property Name="policyHolderId" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="claimDetailsId" Type="int" Nullable="false" />
-          <Property Name="vetPractiseId" Type="int" Nullable="false" />
-        </EntityType>
         <EntityType Name="PolicyHolder">
           <Key>
             <PropertyRef Name="policyNumber" />
@@ -45,21 +33,17 @@ warning 6002: The table/view 'PetSure.dbo.ph_vp_claim' does not have a primary k
           <Property Name="phState" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="phPhone" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'PetSure.dbo.VethubClaims' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="VethubClaims">
           <Key>
-            <PropertyRef Name="policyNumber" />
+            <PropertyRef Name="policyHolderId" />
+            <PropertyRef Name="claimDetailsId" />
+            <PropertyRef Name="vetPractiseId" />
           </Key>
-          <Property Name="policyNumber" Type="int" Nullable="false" />
-          <Property Name="policyHolder" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="petName" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="vetPractice" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="amount" Type="numeric" Precision="13" Scale="2" Nullable="false" />
-          <Property Name="microChip" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="vetHubRef" Type="int" Nullable="false" />
-          <Property Name="claimRef" Type="int" Nullable="false" />
-          <Property Name="claim" Type="int" Nullable="false" />
-          <Property Name="status" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="dateSubmitted" Type="datetime" Nullable="false" />
+          <Property Name="policyHolderId" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="claimDetailsId" Type="int" Nullable="false" />
+          <Property Name="vetPractiseId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="VetPractise">
           <Key>
@@ -78,45 +62,41 @@ warning 6002: The table/view 'PetSure.dbo.ph_vp_claim' does not have a primary k
         </EntityType>
         <Association Name="FK__ph_vp_cla__claim__70DDC3D8">
           <End Role="ClaimDetails" Type="Self.ClaimDetails" Multiplicity="1" />
-          <End Role="ph_vp_claim" Type="Self.ph_vp_claim" Multiplicity="*" />
+          <End Role="VethubClaims" Type="Self.VethubClaims" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ClaimDetails">
               <PropertyRef Name="claimId" />
             </Principal>
-            <Dependent Role="ph_vp_claim">
+            <Dependent Role="VethubClaims">
               <PropertyRef Name="claimDetailsId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK__ph_vp_cla__polic__6FE99F9F">
           <End Role="PolicyHolder" Type="Self.PolicyHolder" Multiplicity="1" />
-          <End Role="ph_vp_claim" Type="Self.ph_vp_claim" Multiplicity="*" />
+          <End Role="VethubClaims" Type="Self.VethubClaims" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="PolicyHolder">
               <PropertyRef Name="policyNumber" />
             </Principal>
-            <Dependent Role="ph_vp_claim">
+            <Dependent Role="VethubClaims">
               <PropertyRef Name="policyHolderId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK__ph_vp_clai__vpId__71D1E811">
           <End Role="VetPractise" Type="Self.VetPractise" Multiplicity="1" />
-          <End Role="ph_vp_claim" Type="Self.ph_vp_claim" Multiplicity="*" />
+          <End Role="VethubClaims" Type="Self.VethubClaims" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="VetPractise">
               <PropertyRef Name="vpId" />
             </Principal>
-            <Dependent Role="ph_vp_claim">
+            <Dependent Role="VethubClaims">
               <PropertyRef Name="vetPractiseId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Function Name="getAllVethubClaims" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
-        <Function Name="getdetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="PolicyNumber" Type="nchar" Mode="In" />
-        </Function>
-        <Function Name="getVethubClaims" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+        <Function Name="getClaims" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="PolicyNumber" Type="int" Mode="In" />
           <Parameter Name="PolicyHolder" Type="varchar" Mode="In" />
           <Parameter Name="VetPractise" Type="varchar" Mode="In" />
@@ -131,29 +111,31 @@ warning 6002: The table/view 'PetSure.dbo.ph_vp_claim' does not have a primary k
           <Parameter Name="EndIndex" Type="int" Mode="In" />
           <Parameter Name="Sort" Type="varchar" Mode="In" />
         </Function>
+        <Function Name="getDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="PolicyNumber" Type="nchar" Mode="In" />
+        </Function>
         <EntityContainer Name="VethubClaimStoreContainer">
           <EntitySet Name="ClaimDetails" EntityType="Self.ClaimDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PolicyHolder" EntityType="Self.PolicyHolder" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="VethubClaims" EntityType="Self.VethubClaims" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="VetPractise" EntityType="Self.VetPractise" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ph_vp_claim" EntityType="Self.ph_vp_claim" store:Type="Tables" store:Schema="dbo">
+          <EntitySet Name="VethubClaims" EntityType="Self.VethubClaims" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [ph_vp_claim].[policyHolderId] AS [policyHolderId], 
-    [ph_vp_claim].[claimDetailsId] AS [claimDetailsId], 
-    [ph_vp_claim].[vetPractiseId] AS [vetPractiseId]
-    FROM [dbo].[ph_vp_claim] AS [ph_vp_claim]</DefiningQuery>
+    [VethubClaims].[policyHolderId] AS [policyHolderId], 
+    [VethubClaims].[claimDetailsId] AS [claimDetailsId], 
+    [VethubClaims].[vetPractiseId] AS [vetPractiseId]
+    FROM [dbo].[VethubClaims] AS [VethubClaims]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK__ph_vp_cla__claim__70DDC3D8" Association="Self.FK__ph_vp_cla__claim__70DDC3D8">
             <End Role="ClaimDetails" EntitySet="ClaimDetails" />
-            <End Role="ph_vp_claim" EntitySet="ph_vp_claim" />
+            <End Role="VethubClaims" EntitySet="VethubClaims" />
           </AssociationSet>
           <AssociationSet Name="FK__ph_vp_cla__polic__6FE99F9F" Association="Self.FK__ph_vp_cla__polic__6FE99F9F">
             <End Role="PolicyHolder" EntitySet="PolicyHolder" />
-            <End Role="ph_vp_claim" EntitySet="ph_vp_claim" />
+            <End Role="VethubClaims" EntitySet="VethubClaims" />
           </AssociationSet>
           <AssociationSet Name="FK__ph_vp_clai__vpId__71D1E811" Association="Self.FK__ph_vp_clai__vpId__71D1E811">
             <End Role="VetPractise" EntitySet="VetPractise" />
-            <End Role="ph_vp_claim" EntitySet="ph_vp_claim" />
+            <End Role="VethubClaims" EntitySet="VethubClaims" />
           </AssociationSet>
         </EntityContainer>
       </Schema>
@@ -175,7 +157,7 @@ warning 6002: The table/view 'PetSure.dbo.ph_vp_claim' does not have a primary k
           <Property Name="claimNo" Type="Int32" Nullable="false" />
           <Property Name="claimStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="claimSubmittedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="ph_vp_claim" Relationship="Self.FK__ph_vp_cla__claim__70DDC3D8" FromRole="ClaimDetails" ToRole="ph_vp_claim" />
+          <NavigationProperty Name="VethubClaims" Relationship="Self.FK__ph_vp_cla__claim__70DDC3D8" FromRole="ClaimDetails" ToRole="VethubClaims" />
         </EntityType>
         <EntityType Name="PolicyHolder">
           <Key>
@@ -189,23 +171,7 @@ warning 6002: The table/view 'PetSure.dbo.ph_vp_claim' does not have a primary k
           <Property Name="phPostCode" Type="Int32" Nullable="false" />
           <Property Name="phState" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="phPhone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="ph_vp_claim" Relationship="Self.FK__ph_vp_cla__polic__6FE99F9F" FromRole="PolicyHolder" ToRole="ph_vp_claim" />
-        </EntityType>
-        <EntityType Name="VethubClaim">
-          <Key>
-            <PropertyRef Name="policyNumber" />
-          </Key>
-          <Property Name="policyNumber" Type="Int32" Nullable="false" />
-          <Property Name="policyHolder" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="petName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="vetPractice" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="amount" Type="Decimal" Precision="13" Scale="2" Nullable="false" />
-          <Property Name="microChip" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="vetHubRef" Type="Int32" Nullable="false" />
-          <Property Name="claimRef" Type="Int32" Nullable="false" />
-          <Property Name="claim" Type="Int32" Nullable="false" />
-          <Property Name="status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="dateSubmitted" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="VethubClaims" Relationship="Self.FK__ph_vp_cla__polic__6FE99F9F" FromRole="PolicyHolder" ToRole="VethubClaims" />
         </EntityType>
         <EntityType Name="VetPractise">
           <Key>
@@ -221,9 +187,9 @@ warning 6002: The table/view 'PetSure.dbo.ph_vp_claim' does not have a primary k
           <Property Name="vpPhone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="vpEmail" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="VPMS_Version" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="ph_vp_claim" Relationship="Self.FK__ph_vp_clai__vpId__71D1E811" FromRole="VetPractise" ToRole="ph_vp_claim" />
+          <NavigationProperty Name="VethubClaims" Relationship="Self.FK__ph_vp_clai__vpId__71D1E811" FromRole="VetPractise" ToRole="VethubClaims" />
         </EntityType>
-        <EntityType Name="ph_vp_claim">
+        <EntityType Name="VethubClaim">
           <Key>
             <PropertyRef Name="policyHolderId" />
             <PropertyRef Name="claimDetailsId" />
@@ -232,42 +198,42 @@ warning 6002: The table/view 'PetSure.dbo.ph_vp_claim' does not have a primary k
           <Property Name="policyHolderId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="claimDetailsId" Type="Int32" Nullable="false" />
           <Property Name="vetPractiseId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="ClaimDetail" Relationship="Self.FK__ph_vp_cla__claim__70DDC3D8" FromRole="ph_vp_claim" ToRole="ClaimDetails" />
-          <NavigationProperty Name="PolicyHolder" Relationship="Self.FK__ph_vp_cla__polic__6FE99F9F" FromRole="ph_vp_claim" ToRole="PolicyHolder" />
-          <NavigationProperty Name="VetPractise" Relationship="Self.FK__ph_vp_clai__vpId__71D1E811" FromRole="ph_vp_claim" ToRole="VetPractise" />
+          <NavigationProperty Name="ClaimDetail" Relationship="Self.FK__ph_vp_cla__claim__70DDC3D8" FromRole="VethubClaims" ToRole="ClaimDetails" />
+          <NavigationProperty Name="PolicyHolder" Relationship="Self.FK__ph_vp_cla__polic__6FE99F9F" FromRole="VethubClaims" ToRole="PolicyHolder" />
+          <NavigationProperty Name="VetPractise" Relationship="Self.FK__ph_vp_clai__vpId__71D1E811" FromRole="VethubClaims" ToRole="VetPractise" />
         </EntityType>
         <Association Name="FK__ph_vp_cla__claim__70DDC3D8">
           <End Role="ClaimDetails" Type="Self.ClaimDetail" Multiplicity="1" />
-          <End Role="ph_vp_claim" Type="Self.ph_vp_claim" Multiplicity="*" />
+          <End Role="VethubClaims" Type="Self.VethubClaim" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ClaimDetails">
               <PropertyRef Name="claimId" />
             </Principal>
-            <Dependent Role="ph_vp_claim">
+            <Dependent Role="VethubClaims">
               <PropertyRef Name="claimDetailsId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK__ph_vp_cla__polic__6FE99F9F">
           <End Role="PolicyHolder" Type="Self.PolicyHolder" Multiplicity="1" />
-          <End Role="ph_vp_claim" Type="Self.ph_vp_claim" Multiplicity="*" />
+          <End Role="VethubClaims" Type="Self.VethubClaim" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="PolicyHolder">
               <PropertyRef Name="policyNumber" />
             </Principal>
-            <Dependent Role="ph_vp_claim">
+            <Dependent Role="VethubClaims">
               <PropertyRef Name="policyHolderId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK__ph_vp_clai__vpId__71D1E811">
           <End Role="VetPractise" Type="Self.VetPractise" Multiplicity="1" />
-          <End Role="ph_vp_claim" Type="Self.ph_vp_claim" Multiplicity="*" />
+          <End Role="VethubClaims" Type="Self.VethubClaim" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="VetPractise">
               <PropertyRef Name="vpId" />
             </Principal>
-            <Dependent Role="ph_vp_claim">
+            <Dependent Role="VethubClaims">
               <PropertyRef Name="vetPractiseId" />
             </Dependent>
           </ReferentialConstraint>
@@ -275,26 +241,21 @@ warning 6002: The table/view 'PetSure.dbo.ph_vp_claim' does not have a primary k
         <EntityContainer Name="PetSureEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="ClaimDetails" EntityType="Self.ClaimDetail" />
           <EntitySet Name="PolicyHolders" EntityType="Self.PolicyHolder" />
-          <EntitySet Name="VethubClaims" EntityType="Self.VethubClaim" />
           <EntitySet Name="VetPractises" EntityType="Self.VetPractise" />
-          <EntitySet Name="ph_vp_claim" EntityType="Self.ph_vp_claim" />
+          <EntitySet Name="VethubClaims" EntityType="Self.VethubClaim" />
           <AssociationSet Name="FK__ph_vp_cla__claim__70DDC3D8" Association="Self.FK__ph_vp_cla__claim__70DDC3D8">
             <End Role="ClaimDetails" EntitySet="ClaimDetails" />
-            <End Role="ph_vp_claim" EntitySet="ph_vp_claim" />
+            <End Role="VethubClaims" EntitySet="VethubClaims" />
           </AssociationSet>
           <AssociationSet Name="FK__ph_vp_cla__polic__6FE99F9F" Association="Self.FK__ph_vp_cla__polic__6FE99F9F">
             <End Role="PolicyHolder" EntitySet="PolicyHolders" />
-            <End Role="ph_vp_claim" EntitySet="ph_vp_claim" />
+            <End Role="VethubClaims" EntitySet="VethubClaims" />
           </AssociationSet>
           <AssociationSet Name="FK__ph_vp_clai__vpId__71D1E811" Association="Self.FK__ph_vp_clai__vpId__71D1E811">
             <End Role="VetPractise" EntitySet="VetPractises" />
-            <End Role="ph_vp_claim" EntitySet="ph_vp_claim" />
+            <End Role="VethubClaims" EntitySet="VethubClaims" />
           </AssociationSet>
-          <FunctionImport Name="getAllVethubClaims" ReturnType="Collection(VethubClaim.getAllVethubClaims_Result)" />
-          <FunctionImport Name="getdetails" ReturnType="Collection(VethubClaim.getdetails_Result)">
-            <Parameter Name="PolicyNumber" Mode="In" Type="String" />
-          </FunctionImport>
-          <FunctionImport Name="getVethubClaims" ReturnType="Collection(VethubClaim.getVethubClaims_Result)">
+          <FunctionImport Name="getClaims" ReturnType="Collection(VethubClaim.getClaims_Result)">
             <Parameter Name="PolicyNumber" Mode="In" Type="Int32" />
             <Parameter Name="PolicyHolder" Mode="In" Type="String" />
             <Parameter Name="VetPractise" Mode="In" Type="String" />
@@ -309,9 +270,14 @@ warning 6002: The table/view 'PetSure.dbo.ph_vp_claim' does not have a primary k
             <Parameter Name="EndIndex" Mode="In" Type="Int32" />
             <Parameter Name="Sort" Mode="In" Type="String" />
           </FunctionImport>
+          <FunctionImport Name="getDetails" ReturnType="Collection(VethubClaim.getDetails_Result)">
+            <Parameter Name="PolicyNumber" Mode="In" Type="String" />
+          </FunctionImport>
         </EntityContainer>
-        <ComplexType Name="getAllVethubClaims_Result">
-          <Property Type="Int32" Name="policyNumber" Nullable="false" />
+        <ComplexType Name="getClaims_Result">
+          <Property Type="Int64" Name="RowNum" Nullable="true" />
+          <Property Type="Int32" Name="TotalCount" Nullable="true" />
+          <Property Type="String" Name="policyNumber" Nullable="false" MaxLength="50" />
           <Property Type="String" Name="policyHolder" Nullable="false" MaxLength="50" />
           <Property Type="String" Name="petName" Nullable="false" MaxLength="50" />
           <Property Type="String" Name="vetPractice" Nullable="false" MaxLength="50" />
@@ -323,7 +289,7 @@ warning 6002: The table/view 'PetSure.dbo.ph_vp_claim' does not have a primary k
           <Property Type="String" Name="status" Nullable="false" MaxLength="50" />
           <Property Type="DateTime" Name="dateSubmitted" Nullable="false" Precision="23" />
         </ComplexType>
-        <ComplexType Name="getdetails_Result">
+        <ComplexType Name="getDetails_Result">
           <Property Type="String" Name="policyHolderId" Nullable="false" MaxLength="50" />
           <Property Type="Int32" Name="claimDetailsId" Nullable="false" />
           <Property Type="Int32" Name="vetPractiseId" Nullable="false" />
@@ -355,21 +321,6 @@ warning 6002: The table/view 'PetSure.dbo.ph_vp_claim' does not have a primary k
           <Property Type="String" Name="vpPhone" Nullable="false" MaxLength="50" />
           <Property Type="String" Name="vpEmail" Nullable="false" MaxLength="255" />
           <Property Type="String" Name="VPMS_Version" Nullable="false" MaxLength="50" />
-        </ComplexType>
-        <ComplexType Name="getVethubClaims_Result">
-          <Property Type="Int64" Name="RowNum" Nullable="true" />
-          <Property Type="Int32" Name="TotalCount" Nullable="true" />
-          <Property Type="Int32" Name="policyNumber" Nullable="false" />
-          <Property Type="String" Name="policyHolder" Nullable="false" MaxLength="50" />
-          <Property Type="String" Name="petName" Nullable="false" MaxLength="50" />
-          <Property Type="String" Name="vetPractice" Nullable="false" MaxLength="50" />
-          <Property Type="Decimal" Name="amount" Nullable="false" Precision="13" Scale="2" />
-          <Property Type="String" Name="microChip" Nullable="false" MaxLength="50" />
-          <Property Type="Int32" Name="vetHubRef" Nullable="false" />
-          <Property Type="Int32" Name="claimRef" Nullable="false" />
-          <Property Type="Int32" Name="claim" Nullable="false" />
-          <Property Type="String" Name="status" Nullable="false" MaxLength="50" />
-          <Property Type="DateTime" Name="dateSubmitted" Nullable="false" Precision="23" />
         </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
@@ -407,23 +358,6 @@ warning 6002: The table/view 'PetSure.dbo.ph_vp_claim' does not have a primary k
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="VethubClaims">
-            <EntityTypeMapping TypeName="VethubClaim.VethubClaim">
-              <MappingFragment StoreEntitySet="VethubClaims">
-                <ScalarProperty Name="policyNumber" ColumnName="policyNumber" />
-                <ScalarProperty Name="policyHolder" ColumnName="policyHolder" />
-                <ScalarProperty Name="petName" ColumnName="petName" />
-                <ScalarProperty Name="vetPractice" ColumnName="vetPractice" />
-                <ScalarProperty Name="amount" ColumnName="amount" />
-                <ScalarProperty Name="microChip" ColumnName="microChip" />
-                <ScalarProperty Name="vetHubRef" ColumnName="vetHubRef" />
-                <ScalarProperty Name="claimRef" ColumnName="claimRef" />
-                <ScalarProperty Name="claim" ColumnName="claim" />
-                <ScalarProperty Name="status" ColumnName="status" />
-                <ScalarProperty Name="dateSubmitted" ColumnName="dateSubmitted" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="VetPractises">
             <EntityTypeMapping TypeName="VethubClaim.VetPractise">
               <MappingFragment StoreEntitySet="VetPractise">
@@ -440,18 +374,20 @@ warning 6002: The table/view 'PetSure.dbo.ph_vp_claim' does not have a primary k
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ph_vp_claim">
-            <EntityTypeMapping TypeName="VethubClaim.ph_vp_claim">
-              <MappingFragment StoreEntitySet="ph_vp_claim">
+          <EntitySetMapping Name="VethubClaims">
+            <EntityTypeMapping TypeName="VethubClaim.VethubClaim">
+              <MappingFragment StoreEntitySet="VethubClaims">
                 <ScalarProperty Name="policyHolderId" ColumnName="policyHolderId" />
                 <ScalarProperty Name="claimDetailsId" ColumnName="claimDetailsId" />
                 <ScalarProperty Name="vetPractiseId" ColumnName="vetPractiseId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="getAllVethubClaims" FunctionName="VethubClaim.Store.getAllVethubClaims">
+          <FunctionImportMapping FunctionImportName="getClaims" FunctionName="VethubClaim.Store.getClaims">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="VethubClaim.getAllVethubClaims_Result">
+              <ComplexTypeMapping TypeName="VethubClaim.getClaims_Result">
+                <ScalarProperty Name="RowNum" ColumnName="RowNum" />
+                <ScalarProperty Name="TotalCount" ColumnName="TotalCount" />
                 <ScalarProperty Name="policyNumber" ColumnName="policyNumber" />
                 <ScalarProperty Name="policyHolder" ColumnName="policyHolder" />
                 <ScalarProperty Name="petName" ColumnName="petName" />
@@ -466,9 +402,9 @@ warning 6002: The table/view 'PetSure.dbo.ph_vp_claim' does not have a primary k
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="getdetails" FunctionName="VethubClaim.Store.getdetails">
+          <FunctionImportMapping FunctionImportName="getDetails" FunctionName="VethubClaim.Store.getDetails">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="VethubClaim.getdetails_Result">
+              <ComplexTypeMapping TypeName="VethubClaim.getDetails_Result">
                 <ScalarProperty Name="policyHolderId" ColumnName="policyHolderId" />
                 <ScalarProperty Name="claimDetailsId" ColumnName="claimDetailsId" />
                 <ScalarProperty Name="vetPractiseId" ColumnName="vetPractiseId" />
@@ -500,25 +436,6 @@ warning 6002: The table/view 'PetSure.dbo.ph_vp_claim' does not have a primary k
                 <ScalarProperty Name="vpPhone" ColumnName="vpPhone" />
                 <ScalarProperty Name="vpEmail" ColumnName="vpEmail" />
                 <ScalarProperty Name="VPMS_Version" ColumnName="VPMS&amp;Version" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="getVethubClaims" FunctionName="VethubClaim.Store.getVethubClaims">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="VethubClaim.getVethubClaims_Result">
-                <ScalarProperty Name="RowNum" ColumnName="RowNum" />
-                <ScalarProperty Name="TotalCount" ColumnName="TotalCount" />
-                <ScalarProperty Name="policyNumber" ColumnName="policyNumber" />
-                <ScalarProperty Name="policyHolder" ColumnName="policyHolder" />
-                <ScalarProperty Name="petName" ColumnName="petName" />
-                <ScalarProperty Name="vetPractice" ColumnName="vetPractice" />
-                <ScalarProperty Name="amount" ColumnName="amount" />
-                <ScalarProperty Name="microChip" ColumnName="microChip" />
-                <ScalarProperty Name="vetHubRef" ColumnName="vetHubRef" />
-                <ScalarProperty Name="claimRef" ColumnName="claimRef" />
-                <ScalarProperty Name="claim" ColumnName="claim" />
-                <ScalarProperty Name="status" ColumnName="status" />
-                <ScalarProperty Name="dateSubmitted" ColumnName="dateSubmitted" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>

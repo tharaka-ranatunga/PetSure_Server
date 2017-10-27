@@ -14,16 +14,12 @@ namespace PetSure_Server.Models
     
     public partial class VethubClaim
     {
-        public int policyNumber { get; set; }
-        public string policyHolder { get; set; }
-        public string petName { get; set; }
-        public string vetPractice { get; set; }
-        public decimal amount { get; set; }
-        public string microChip { get; set; }
-        public int vetHubRef { get; set; }
-        public int claimRef { get; set; }
-        public int claim { get; set; }
-        public string status { get; set; }
-        public System.DateTime dateSubmitted { get; set; }
+        public string policyHolderId { get; set; }
+        public int claimDetailsId { get; set; }
+        public int vetPractiseId { get; set; }
+    
+        public virtual ClaimDetail ClaimDetail { get; set; }
+        public virtual PolicyHolder PolicyHolder { get; set; }
+        public virtual VetPractise VetPractise { get; set; }
     }
 }

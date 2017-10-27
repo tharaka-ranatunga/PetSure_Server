@@ -221,8 +221,8 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Controllers\VethubClaimsController.cs" />
+    <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -231,19 +231,13 @@
     <Compile Include="Models\ClaimDetail.cs">
       <DependentUpon>VethubClaim.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\getAllVethubClaims_Result.cs">
+    <Compile Include="Models\getClaims_Result.cs">
       <DependentUpon>VethubClaim.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\getdetails_Result.cs">
-      <DependentUpon>VethubClaim.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\getVethubClaims_Result.cs">
+    <Compile Include="Models\getDetails_Result.cs">
       <DependentUpon>VethubClaim.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\IdentityModels.cs" />
-    <Compile Include="Models\ph_vp_claim.cs">
-      <DependentUpon>VethubClaim.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\PolicyHolder.cs">
       <DependentUpon>VethubClaim.tt</DependentUpon>
     </Compile>

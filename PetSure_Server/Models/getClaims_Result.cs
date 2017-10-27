@@ -11,11 +11,11 @@ namespace PetSure_Server.Models
 {
     using System;
     
-    public partial class getVethubClaims_Result
+    public partial class getClaims_Result
     {
         public Nullable<long> RowNum { get; set; }
         public Nullable<int> TotalCount { get; set; }
-        public int policyNumber { get; set; }
+        public string policyNumber { get; set; }
         public string policyHolder { get; set; }
         public string petName { get; set; }
         public string vetPractice { get; set; }

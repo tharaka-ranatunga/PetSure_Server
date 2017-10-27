@@ -46,7 +46,7 @@ namespace PetSure_Server.Controllers
         [ResponseType(typeof(VethubClaim))]
         public IHttpActionResult Get(string id)
         {
-            var result = db.getdetails(id);
+            var result = db.getDetails(id);
             if (result == null)
             {
                 return NotFound();
@@ -77,7 +77,7 @@ namespace PetSure_Server.Controllers
             if (!string.IsNullOrWhiteSpace(query.dateSubmittedFrom)) { startDate = Convert.ToDateTime(query.dateSubmittedFrom); }
             if (!string.IsNullOrWhiteSpace(query.dateSubmittedTo)) { endDate = Convert.ToDateTime(query.dateSubmittedTo); }
 
-            var result = db.getVethubClaims(policyNumber, query.policyHolder, query.vetPractice, query.petName, query.status, vethubRefNo, claimRefNo, claimNo, startDate , endDate ,startIndex ,endIndex, query.sort);
+            var result = db.getClaims(policyNumber, query.policyHolder, query.vetPractice, query.petName, query.status, vethubRefNo, claimRefNo, claimNo, startDate, endDate, startIndex, endIndex, query.sort);
             if (result == null)
             {
                 return NotFound();
@@ -85,100 +85,6 @@ namespace PetSure_Server.Controllers
 
             return Json(result);
         }
-
-        // PUT: api/VethubClaims/5
-        [ResponseType(typeof(void))]
-        public IHttpActionResult PutVethubClaim(int id, VethubClaim vethubClaim)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != vethubClaim.policyNumber)
-            {
-                return BadRequest();
-            }
-
-            db.Entry(vethubClaim).State = EntityState.Modified;
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!VethubClaimExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-        // POST: api/VethubClaims
-        [ResponseType(typeof(VethubClaim))]
-        public IHttpActionResult PostVethubClaim(VethubClaim vethubClaim)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            db.VethubClaims.Add(vethubClaim);
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateException)
-            {
-                if (VethubClaimExists(vethubClaim.policyNumber))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return CreatedAtRoute("DefaultApi", new { id = vethubClaim.policyNumber }, vethubClaim);
-        }
-
-        // DELETE: api/VethubClaims/5
-        [ResponseType(typeof(VethubClaim))]
-        public IHttpActionResult DeleteVethubClaim(int id)
-        {
-            VethubClaim vethubClaim = db.VethubClaims.Find(id);
-            if (vethubClaim == null)
-            {
-                return NotFound();
-            }
-
-            db.VethubClaims.Remove(vethubClaim);
-            db.SaveChanges();
-
-            return Ok(vethubClaim);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-        private bool VethubClaimExists(int id)
-        {
-            return db.VethubClaims.Count(e => e.policyNumber == id) > 0;
-        }
+        
     }
 }
