@@ -220,7 +220,6 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
-    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Controllers\VethubClaimsController.cs" />
@@ -229,13 +228,25 @@
     </Compile>
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\ClaimDetail.cs">
+      <DependentUpon>VethubClaim.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\getAllVethubClaims_Result.cs">
+      <DependentUpon>VethubClaim.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\getdetails_Result.cs">
       <DependentUpon>VethubClaim.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\getVethubClaims_Result.cs">
       <DependentUpon>VethubClaim.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\ph_vp_claim.cs">
+      <DependentUpon>VethubClaim.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PolicyHolder.cs">
+      <DependentUpon>VethubClaim.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\VethubClaim.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -252,6 +263,9 @@
     <Compile Include="Models\VethubClaim1.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <DependentUpon>VethubClaim.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\VetPractise.cs">
       <DependentUpon>VethubClaim.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -315,7 +329,9 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -344,6 +360,11 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\SonarAnalyzer.CSharp.6.5.0.3766\analyzers\Google.Protobuf.dll" />
+    <Analyzer Include="..\packages\SonarAnalyzer.CSharp.6.5.0.3766\analyzers\SonarAnalyzer.CSharp.dll" />
+    <Analyzer Include="..\packages\SonarAnalyzer.CSharp.6.5.0.3766\analyzers\SonarAnalyzer.dll" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

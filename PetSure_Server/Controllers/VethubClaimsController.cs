@@ -42,6 +42,19 @@ namespace PetSure_Server.Controllers
         //}
 
         // GET: api/VethubClaims/5
+        // GET api/values/5
+        [ResponseType(typeof(VethubClaim))]
+        public IHttpActionResult Get(string id)
+        {
+            var result = db.getdetails(id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Json(result);
+        }
+
         [ResponseType(typeof(VethubClaim))]
         public IHttpActionResult GetVethubClaim([FromUri] VethubQuery query)
         {
@@ -65,7 +78,6 @@ namespace PetSure_Server.Controllers
             if (!string.IsNullOrWhiteSpace(query.dateSubmittedTo)) { endDate = Convert.ToDateTime(query.dateSubmittedTo); }
 
             var result = db.getVethubClaims(policyNumber, query.policyHolder, query.vetPractice, query.petName, query.status, vethubRefNo, claimRefNo, claimNo, startDate , endDate ,startIndex ,endIndex, query.sort);
-      
             if (result == null)
             {
                 return NotFound();

@@ -5,23 +5,117 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
       <Schema Namespace="VethubClaim.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ClaimDetails">
+          <Key>
+            <PropertyRef Name="claimId" />
+          </Key>
+          <Property Name="claimId" Type="int" Nullable="false" />
+          <Property Name="claimPetName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="claimMicrochip" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="claimBreed" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="claimAmount" Type="numeric" Precision="13" Scale="2" Nullable="false" />
+          <Property Name="claimVetHubRef" Type="int" Nullable="false" />
+          <Property Name="claimRefNo" Type="int" Nullable="false" />
+          <Property Name="claimNo" Type="int" Nullable="false" />
+          <Property Name="claimStatus" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="claimSubmittedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'PetSure.dbo.ph_vp_claim' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ph_vp_claim">
+          <Key>
+            <PropertyRef Name="policyHolderId" />
+            <PropertyRef Name="claimDetailsId" />
+            <PropertyRef Name="vetPractiseId" />
+          </Key>
+          <Property Name="policyHolderId" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="claimDetailsId" Type="int" Nullable="false" />
+          <Property Name="vetPractiseId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PolicyHolder">
+          <Key>
+            <PropertyRef Name="policyNumber" />
+          </Key>
+          <Property Name="policyNumber" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="policyHolder" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="insurer" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="phAddress" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="phSurburb" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="phPostCode" Type="int" Nullable="false" />
+          <Property Name="phState" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="phPhone" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
         <EntityType Name="VethubClaims">
           <Key>
             <PropertyRef Name="policyNumber" />
           </Key>
           <Property Name="policyNumber" Type="int" Nullable="false" />
-          <Property Name="policyHolder" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="petName" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="vetPractice" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="policyHolder" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="petName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="vetPractice" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="amount" Type="numeric" Precision="13" Scale="2" Nullable="false" />
           <Property Name="microChip" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="vetHubRef" Type="int" Nullable="false" />
           <Property Name="claimRef" Type="int" Nullable="false" />
           <Property Name="claim" Type="int" Nullable="false" />
-          <Property Name="status" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="status" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="dateSubmitted" Type="datetime" Nullable="false" />
         </EntityType>
+        <EntityType Name="VetPractise">
+          <Key>
+            <PropertyRef Name="vpId" />
+          </Key>
+          <Property Name="vpId" Type="int" Nullable="false" />
+          <Property Name="vetPractise" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="submittedBy" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="vpAddress" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="vpSuburb" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="vpPostCode" Type="int" Nullable="false" />
+          <Property Name="vpState" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="vpPhone" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="vpEmail" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="VPMS&amp;Version" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__ph_vp_cla__claim__70DDC3D8">
+          <End Role="ClaimDetails" Type="Self.ClaimDetails" Multiplicity="1" />
+          <End Role="ph_vp_claim" Type="Self.ph_vp_claim" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ClaimDetails">
+              <PropertyRef Name="claimId" />
+            </Principal>
+            <Dependent Role="ph_vp_claim">
+              <PropertyRef Name="claimDetailsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ph_vp_cla__polic__6FE99F9F">
+          <End Role="PolicyHolder" Type="Self.PolicyHolder" Multiplicity="1" />
+          <End Role="ph_vp_claim" Type="Self.ph_vp_claim" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PolicyHolder">
+              <PropertyRef Name="policyNumber" />
+            </Principal>
+            <Dependent Role="ph_vp_claim">
+              <PropertyRef Name="policyHolderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ph_vp_clai__vpId__71D1E811">
+          <End Role="VetPractise" Type="Self.VetPractise" Multiplicity="1" />
+          <End Role="ph_vp_claim" Type="Self.ph_vp_claim" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="VetPractise">
+              <PropertyRef Name="vpId" />
+            </Principal>
+            <Dependent Role="ph_vp_claim">
+              <PropertyRef Name="vetPractiseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Function Name="getAllVethubClaims" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="getdetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="PolicyNumber" Type="nchar" Mode="In" />
+        </Function>
         <Function Name="getVethubClaims" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="PolicyNumber" Type="int" Mode="In" />
           <Parameter Name="PolicyHolder" Type="varchar" Mode="In" />
@@ -38,32 +132,168 @@
           <Parameter Name="Sort" Type="varchar" Mode="In" />
         </Function>
         <EntityContainer Name="VethubClaimStoreContainer">
+          <EntitySet Name="ClaimDetails" EntityType="Self.ClaimDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PolicyHolder" EntityType="Self.PolicyHolder" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="VethubClaims" EntityType="Self.VethubClaims" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="VetPractise" EntityType="Self.VetPractise" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ph_vp_claim" EntityType="Self.ph_vp_claim" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ph_vp_claim].[policyHolderId] AS [policyHolderId], 
+    [ph_vp_claim].[claimDetailsId] AS [claimDetailsId], 
+    [ph_vp_claim].[vetPractiseId] AS [vetPractiseId]
+    FROM [dbo].[ph_vp_claim] AS [ph_vp_claim]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK__ph_vp_cla__claim__70DDC3D8" Association="Self.FK__ph_vp_cla__claim__70DDC3D8">
+            <End Role="ClaimDetails" EntitySet="ClaimDetails" />
+            <End Role="ph_vp_claim" EntitySet="ph_vp_claim" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ph_vp_cla__polic__6FE99F9F" Association="Self.FK__ph_vp_cla__polic__6FE99F9F">
+            <End Role="PolicyHolder" EntitySet="PolicyHolder" />
+            <End Role="ph_vp_claim" EntitySet="ph_vp_claim" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ph_vp_clai__vpId__71D1E811" Association="Self.FK__ph_vp_clai__vpId__71D1E811">
+            <End Role="VetPractise" EntitySet="VetPractise" />
+            <End Role="ph_vp_claim" EntitySet="ph_vp_claim" />
+          </AssociationSet>
         </EntityContainer>
       </Schema>
     </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="VethubClaim" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="ClaimDetail">
+          <Key>
+            <PropertyRef Name="claimId" />
+          </Key>
+          <Property Name="claimId" Type="Int32" Nullable="false" />
+          <Property Name="claimPetName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="claimMicrochip" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="claimBreed" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="claimAmount" Type="Decimal" Precision="13" Scale="2" Nullable="false" />
+          <Property Name="claimVetHubRef" Type="Int32" Nullable="false" />
+          <Property Name="claimRefNo" Type="Int32" Nullable="false" />
+          <Property Name="claimNo" Type="Int32" Nullable="false" />
+          <Property Name="claimStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="claimSubmittedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="ph_vp_claim" Relationship="Self.FK__ph_vp_cla__claim__70DDC3D8" FromRole="ClaimDetails" ToRole="ph_vp_claim" />
+        </EntityType>
+        <EntityType Name="PolicyHolder">
+          <Key>
+            <PropertyRef Name="policyNumber" />
+          </Key>
+          <Property Name="policyNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="policyHolder1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="insurer" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="phAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="phSurburb" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="phPostCode" Type="Int32" Nullable="false" />
+          <Property Name="phState" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="phPhone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="ph_vp_claim" Relationship="Self.FK__ph_vp_cla__polic__6FE99F9F" FromRole="PolicyHolder" ToRole="ph_vp_claim" />
+        </EntityType>
         <EntityType Name="VethubClaim">
           <Key>
             <PropertyRef Name="policyNumber" />
           </Key>
           <Property Name="policyNumber" Type="Int32" Nullable="false" />
-          <Property Name="policyHolder" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="petName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="vetPractice" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="policyHolder" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="petName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="vetPractice" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="amount" Type="Decimal" Precision="13" Scale="2" Nullable="false" />
           <Property Name="microChip" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="vetHubRef" Type="Int32" Nullable="false" />
           <Property Name="claimRef" Type="Int32" Nullable="false" />
           <Property Name="claim" Type="Int32" Nullable="false" />
-          <Property Name="status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="dateSubmitted" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
+        <EntityType Name="VetPractise">
+          <Key>
+            <PropertyRef Name="vpId" />
+          </Key>
+          <Property Name="vpId" Type="Int32" Nullable="false" />
+          <Property Name="vetPractise1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="submittedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="vpAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="vpSuburb" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="vpPostCode" Type="Int32" Nullable="false" />
+          <Property Name="vpState" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="vpPhone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="vpEmail" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="VPMS_Version" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="ph_vp_claim" Relationship="Self.FK__ph_vp_clai__vpId__71D1E811" FromRole="VetPractise" ToRole="ph_vp_claim" />
+        </EntityType>
+        <EntityType Name="ph_vp_claim">
+          <Key>
+            <PropertyRef Name="policyHolderId" />
+            <PropertyRef Name="claimDetailsId" />
+            <PropertyRef Name="vetPractiseId" />
+          </Key>
+          <Property Name="policyHolderId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="claimDetailsId" Type="Int32" Nullable="false" />
+          <Property Name="vetPractiseId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ClaimDetail" Relationship="Self.FK__ph_vp_cla__claim__70DDC3D8" FromRole="ph_vp_claim" ToRole="ClaimDetails" />
+          <NavigationProperty Name="PolicyHolder" Relationship="Self.FK__ph_vp_cla__polic__6FE99F9F" FromRole="ph_vp_claim" ToRole="PolicyHolder" />
+          <NavigationProperty Name="VetPractise" Relationship="Self.FK__ph_vp_clai__vpId__71D1E811" FromRole="ph_vp_claim" ToRole="VetPractise" />
+        </EntityType>
+        <Association Name="FK__ph_vp_cla__claim__70DDC3D8">
+          <End Role="ClaimDetails" Type="Self.ClaimDetail" Multiplicity="1" />
+          <End Role="ph_vp_claim" Type="Self.ph_vp_claim" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ClaimDetails">
+              <PropertyRef Name="claimId" />
+            </Principal>
+            <Dependent Role="ph_vp_claim">
+              <PropertyRef Name="claimDetailsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ph_vp_cla__polic__6FE99F9F">
+          <End Role="PolicyHolder" Type="Self.PolicyHolder" Multiplicity="1" />
+          <End Role="ph_vp_claim" Type="Self.ph_vp_claim" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PolicyHolder">
+              <PropertyRef Name="policyNumber" />
+            </Principal>
+            <Dependent Role="ph_vp_claim">
+              <PropertyRef Name="policyHolderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ph_vp_clai__vpId__71D1E811">
+          <End Role="VetPractise" Type="Self.VetPractise" Multiplicity="1" />
+          <End Role="ph_vp_claim" Type="Self.ph_vp_claim" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="VetPractise">
+              <PropertyRef Name="vpId" />
+            </Principal>
+            <Dependent Role="ph_vp_claim">
+              <PropertyRef Name="vetPractiseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="PetSureEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ClaimDetails" EntityType="Self.ClaimDetail" />
+          <EntitySet Name="PolicyHolders" EntityType="Self.PolicyHolder" />
           <EntitySet Name="VethubClaims" EntityType="Self.VethubClaim" />
+          <EntitySet Name="VetPractises" EntityType="Self.VetPractise" />
+          <EntitySet Name="ph_vp_claim" EntityType="Self.ph_vp_claim" />
+          <AssociationSet Name="FK__ph_vp_cla__claim__70DDC3D8" Association="Self.FK__ph_vp_cla__claim__70DDC3D8">
+            <End Role="ClaimDetails" EntitySet="ClaimDetails" />
+            <End Role="ph_vp_claim" EntitySet="ph_vp_claim" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ph_vp_cla__polic__6FE99F9F" Association="Self.FK__ph_vp_cla__polic__6FE99F9F">
+            <End Role="PolicyHolder" EntitySet="PolicyHolders" />
+            <End Role="ph_vp_claim" EntitySet="ph_vp_claim" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ph_vp_clai__vpId__71D1E811" Association="Self.FK__ph_vp_clai__vpId__71D1E811">
+            <End Role="VetPractise" EntitySet="VetPractises" />
+            <End Role="ph_vp_claim" EntitySet="ph_vp_claim" />
+          </AssociationSet>
           <FunctionImport Name="getAllVethubClaims" ReturnType="Collection(VethubClaim.getAllVethubClaims_Result)" />
+          <FunctionImport Name="getdetails" ReturnType="Collection(VethubClaim.getdetails_Result)">
+            <Parameter Name="PolicyNumber" Mode="In" Type="String" />
+          </FunctionImport>
           <FunctionImport Name="getVethubClaims" ReturnType="Collection(VethubClaim.getVethubClaims_Result)">
             <Parameter Name="PolicyNumber" Mode="In" Type="Int32" />
             <Parameter Name="PolicyHolder" Mode="In" Type="String" />
@@ -93,6 +323,39 @@
           <Property Type="String" Name="status" Nullable="false" MaxLength="50" />
           <Property Type="DateTime" Name="dateSubmitted" Nullable="false" Precision="23" />
         </ComplexType>
+        <ComplexType Name="getdetails_Result">
+          <Property Type="String" Name="policyHolderId" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="claimDetailsId" Nullable="false" />
+          <Property Type="Int32" Name="vetPractiseId" Nullable="false" />
+          <Property Type="String" Name="policyNumber" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="policyHolder" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="insurer" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="phAddress" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="phSurburb" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="phPostCode" Nullable="false" />
+          <Property Type="String" Name="phState" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="phPhone" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="claimId" Nullable="false" />
+          <Property Type="String" Name="claimPetName" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="claimMicrochip" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="claimBreed" Nullable="false" MaxLength="50" />
+          <Property Type="Decimal" Name="claimAmount" Nullable="false" Precision="13" Scale="2" />
+          <Property Type="Int32" Name="claimVetHubRef" Nullable="false" />
+          <Property Type="Int32" Name="claimRefNo" Nullable="false" />
+          <Property Type="Int32" Name="claimNo" Nullable="false" />
+          <Property Type="String" Name="claimStatus" Nullable="false" MaxLength="50" />
+          <Property Type="DateTime" Name="claimSubmittedDate" Nullable="false" Precision="23" />
+          <Property Type="Int32" Name="vpId" Nullable="false" />
+          <Property Type="String" Name="vetPractise" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="submittedBy" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="vpAddress" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="vpSuburb" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="vpPostCode" Nullable="false" />
+          <Property Type="String" Name="vpState" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="vpPhone" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="vpEmail" Nullable="false" MaxLength="255" />
+          <Property Type="String" Name="VPMS_Version" Nullable="false" MaxLength="50" />
+        </ComplexType>
         <ComplexType Name="getVethubClaims_Result">
           <Property Type="Int64" Name="RowNum" Nullable="true" />
           <Property Type="Int32" Name="TotalCount" Nullable="true" />
@@ -114,6 +377,36 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="VethubClaimStoreContainer" CdmEntityContainer="PetSureEntities">
+          <EntitySetMapping Name="ClaimDetails">
+            <EntityTypeMapping TypeName="VethubClaim.ClaimDetail">
+              <MappingFragment StoreEntitySet="ClaimDetails">
+                <ScalarProperty Name="claimId" ColumnName="claimId" />
+                <ScalarProperty Name="claimPetName" ColumnName="claimPetName" />
+                <ScalarProperty Name="claimMicrochip" ColumnName="claimMicrochip" />
+                <ScalarProperty Name="claimBreed" ColumnName="claimBreed" />
+                <ScalarProperty Name="claimAmount" ColumnName="claimAmount" />
+                <ScalarProperty Name="claimVetHubRef" ColumnName="claimVetHubRef" />
+                <ScalarProperty Name="claimRefNo" ColumnName="claimRefNo" />
+                <ScalarProperty Name="claimNo" ColumnName="claimNo" />
+                <ScalarProperty Name="claimStatus" ColumnName="claimStatus" />
+                <ScalarProperty Name="claimSubmittedDate" ColumnName="claimSubmittedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PolicyHolders">
+            <EntityTypeMapping TypeName="VethubClaim.PolicyHolder">
+              <MappingFragment StoreEntitySet="PolicyHolder">
+                <ScalarProperty Name="policyNumber" ColumnName="policyNumber" />
+                <ScalarProperty Name="policyHolder1" ColumnName="policyHolder" />
+                <ScalarProperty Name="insurer" ColumnName="insurer" />
+                <ScalarProperty Name="phAddress" ColumnName="phAddress" />
+                <ScalarProperty Name="phSurburb" ColumnName="phSurburb" />
+                <ScalarProperty Name="phPostCode" ColumnName="phPostCode" />
+                <ScalarProperty Name="phState" ColumnName="phState" />
+                <ScalarProperty Name="phPhone" ColumnName="phPhone" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="VethubClaims">
             <EntityTypeMapping TypeName="VethubClaim.VethubClaim">
               <MappingFragment StoreEntitySet="VethubClaims">
@@ -131,6 +424,31 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="VetPractises">
+            <EntityTypeMapping TypeName="VethubClaim.VetPractise">
+              <MappingFragment StoreEntitySet="VetPractise">
+                <ScalarProperty Name="vpId" ColumnName="vpId" />
+                <ScalarProperty Name="vetPractise1" ColumnName="vetPractise" />
+                <ScalarProperty Name="submittedBy" ColumnName="submittedBy" />
+                <ScalarProperty Name="vpAddress" ColumnName="vpAddress" />
+                <ScalarProperty Name="vpSuburb" ColumnName="vpSuburb" />
+                <ScalarProperty Name="vpPostCode" ColumnName="vpPostCode" />
+                <ScalarProperty Name="vpState" ColumnName="vpState" />
+                <ScalarProperty Name="vpPhone" ColumnName="vpPhone" />
+                <ScalarProperty Name="vpEmail" ColumnName="vpEmail" />
+                <ScalarProperty Name="VPMS_Version" ColumnName="VPMS&amp;Version" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ph_vp_claim">
+            <EntityTypeMapping TypeName="VethubClaim.ph_vp_claim">
+              <MappingFragment StoreEntitySet="ph_vp_claim">
+                <ScalarProperty Name="policyHolderId" ColumnName="policyHolderId" />
+                <ScalarProperty Name="claimDetailsId" ColumnName="claimDetailsId" />
+                <ScalarProperty Name="vetPractiseId" ColumnName="vetPractiseId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <FunctionImportMapping FunctionImportName="getAllVethubClaims" FunctionName="VethubClaim.Store.getAllVethubClaims">
             <ResultMapping>
               <ComplexTypeMapping TypeName="VethubClaim.getAllVethubClaims_Result">
@@ -145,6 +463,43 @@
                 <ScalarProperty Name="claim" ColumnName="claim" />
                 <ScalarProperty Name="status" ColumnName="status" />
                 <ScalarProperty Name="dateSubmitted" ColumnName="dateSubmitted" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="getdetails" FunctionName="VethubClaim.Store.getdetails">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="VethubClaim.getdetails_Result">
+                <ScalarProperty Name="policyHolderId" ColumnName="policyHolderId" />
+                <ScalarProperty Name="claimDetailsId" ColumnName="claimDetailsId" />
+                <ScalarProperty Name="vetPractiseId" ColumnName="vetPractiseId" />
+                <ScalarProperty Name="policyNumber" ColumnName="policyNumber" />
+                <ScalarProperty Name="policyHolder" ColumnName="policyHolder" />
+                <ScalarProperty Name="insurer" ColumnName="insurer" />
+                <ScalarProperty Name="phAddress" ColumnName="phAddress" />
+                <ScalarProperty Name="phSurburb" ColumnName="phSurburb" />
+                <ScalarProperty Name="phPostCode" ColumnName="phPostCode" />
+                <ScalarProperty Name="phState" ColumnName="phState" />
+                <ScalarProperty Name="phPhone" ColumnName="phPhone" />
+                <ScalarProperty Name="claimId" ColumnName="claimId" />
+                <ScalarProperty Name="claimPetName" ColumnName="claimPetName" />
+                <ScalarProperty Name="claimMicrochip" ColumnName="claimMicrochip" />
+                <ScalarProperty Name="claimBreed" ColumnName="claimBreed" />
+                <ScalarProperty Name="claimAmount" ColumnName="claimAmount" />
+                <ScalarProperty Name="claimVetHubRef" ColumnName="claimVetHubRef" />
+                <ScalarProperty Name="claimRefNo" ColumnName="claimRefNo" />
+                <ScalarProperty Name="claimNo" ColumnName="claimNo" />
+                <ScalarProperty Name="claimStatus" ColumnName="claimStatus" />
+                <ScalarProperty Name="claimSubmittedDate" ColumnName="claimSubmittedDate" />
+                <ScalarProperty Name="vpId" ColumnName="vpId" />
+                <ScalarProperty Name="vetPractise" ColumnName="vetPractise" />
+                <ScalarProperty Name="submittedBy" ColumnName="submittedBy" />
+                <ScalarProperty Name="vpAddress" ColumnName="vpAddress" />
+                <ScalarProperty Name="vpSuburb" ColumnName="vpSuburb" />
+                <ScalarProperty Name="vpPostCode" ColumnName="vpPostCode" />
+                <ScalarProperty Name="vpState" ColumnName="vpState" />
+                <ScalarProperty Name="vpPhone" ColumnName="vpPhone" />
+                <ScalarProperty Name="vpEmail" ColumnName="vpEmail" />
+                <ScalarProperty Name="VPMS_Version" ColumnName="VPMS&amp;Version" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
