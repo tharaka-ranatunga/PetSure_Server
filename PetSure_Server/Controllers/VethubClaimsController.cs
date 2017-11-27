@@ -16,9 +16,9 @@ namespace PetSure_Server.Controllers
     [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class VethubClaimsController : ApiController
     {
-        private PetSureEntities db = new PetSureEntities();
+        private PetSureEntities db = new PetSureEntities(); //db connection
 
-        public class VethubQuery
+        public class VethubQuery   //defining query class for GetVethubClaim method
         {
             public string policyNumber { get; set; }
             public string policyHolder { get; set; }
@@ -35,31 +35,27 @@ namespace PetSure_Server.Controllers
             public string sort { get; set; }
         }
 
-        // GET: api/VethubClaims
-        //public IQueryable<VethubClaim> GetVethubClaims()
-        //{
-        //    return db.VethubClaims;
-        //}
-
-        // GET: api/VethubClaims/5
-        // GET api/values/5
         [ResponseType(typeof(VethubClaim))]
-        public IHttpActionResult Get(string id)
+        public IHttpActionResult Get([FromUri] string policyNum, [FromUri] string info) //get information of claims specifying policy number
         {
-            var result = db.getDetails(id);
-            if (result == null)
+            if (info == "attachments")
             {
+                return Json(db.getAttachments(policyNum)); //get attachment details and return in json format
+            }
+            else if (info == "claimdetails")
+            {
+                return Json(db.getDetails(policyNum)); //get claim details
+            }
+            else {
                 return NotFound();
             }
-
-            return Json(result);
         }
-
+        
         [ResponseType(typeof(VethubClaim))]
-        public IHttpActionResult GetVethubClaim([FromUri] VethubQuery query)
+        public IHttpActionResult GetVethubClaim([FromUri] VethubQuery query) //get search results with query parameters
         {
 
-            Nullable<int> policyNumber = null;
+            Nullable<int> policyNumber = null; //defining nullable parameters
             Nullable<int> vethubRefNo = null;
             Nullable<int> claimRefNo = null;
             Nullable<int> claimNo = null;
@@ -68,7 +64,7 @@ namespace PetSure_Server.Controllers
             Nullable<DateTime> startDate = null;
             Nullable<DateTime> endDate = null;
 
-            if (!string.IsNullOrWhiteSpace(query.policyNumber)) { policyNumber = Convert.ToInt32(query.policyNumber); }
+            if (!string.IsNullOrWhiteSpace(query.policyNumber)) { policyNumber = Convert.ToInt32(query.policyNumber); } //assign query parameters if provided
             if (!string.IsNullOrWhiteSpace(query.vetHubRef)) { vethubRefNo = Convert.ToInt32(query.vetHubRef); }
             if (!string.IsNullOrWhiteSpace(query.claimRef)) { claimRefNo = Convert.ToInt32(query.claimRef); }
             if (!string.IsNullOrWhiteSpace(query.claim)) { claimNo = Convert.ToInt32(query.claim); }
@@ -77,7 +73,7 @@ namespace PetSure_Server.Controllers
             if (!string.IsNullOrWhiteSpace(query.dateSubmittedFrom)) { startDate = Convert.ToDateTime(query.dateSubmittedFrom); }
             if (!string.IsNullOrWhiteSpace(query.dateSubmittedTo)) { endDate = Convert.ToDateTime(query.dateSubmittedTo); }
 
-            var result = db.getClaims(policyNumber, query.policyHolder, query.vetPractice, query.petName, query.status, vethubRefNo, claimRefNo, claimNo, startDate, endDate, startIndex, endIndex, query.sort);
+            var result = db.getClaims(policyNumber, query.policyHolder, query.vetPractice, query.petName, query.status, vethubRefNo, claimRefNo, claimNo, startDate, endDate, startIndex, endIndex, query.sort); //get claims matching with provided information
             if (result == null)
             {
                 return NotFound();

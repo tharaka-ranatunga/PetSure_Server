@@ -5,6 +5,26 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
       <Schema Namespace="VethubClaim.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Attachments">
+          <Key>
+            <PropertyRef Name="attachmentStatusId" />
+          </Key>
+          <Property Name="attachmentStatusId" Type="int" Nullable="false" />
+          <Property Name="attachmentId" Type="int" Nullable="false" />
+          <Property Name="attachmentSubmittedDate" Type="datetime" Nullable="false" />
+          <Property Name="attachmentStatus" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="attachmentUrl" Type="varchar" MaxLength="255" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'PetSure.dbo.ClaimAttachments' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ClaimAttachments">
+          <Key>
+            <PropertyRef Name="policyHoldId" />
+            <PropertyRef Name="attachedId" />
+          </Key>
+          <Property Name="policyHoldId" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="attachedId" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="ClaimDetails">
           <Key>
             <PropertyRef Name="claimId" />
@@ -60,6 +80,30 @@ warning 6002: The table/view 'PetSure.dbo.VethubClaims' does not have a primary 
           <Property Name="vpEmail" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="VPMS&amp;Version" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
+        <Association Name="FK__ClaimAtta__attac__2A164134">
+          <End Role="Attachments" Type="Self.Attachments" Multiplicity="1" />
+          <End Role="ClaimAttachments" Type="Self.ClaimAttachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Attachments">
+              <PropertyRef Name="attachmentStatusId" />
+            </Principal>
+            <Dependent Role="ClaimAttachments">
+              <PropertyRef Name="attachedId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ClaimAtta__polic__29221CFB">
+          <End Role="PolicyHolder" Type="Self.PolicyHolder" Multiplicity="1" />
+          <End Role="ClaimAttachments" Type="Self.ClaimAttachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PolicyHolder">
+              <PropertyRef Name="policyNumber" />
+            </Principal>
+            <Dependent Role="ClaimAttachments">
+              <PropertyRef Name="policyHoldId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__ph_vp_cla__claim__70DDC3D8">
           <End Role="ClaimDetails" Type="Self.ClaimDetails" Multiplicity="1" />
           <End Role="VethubClaims" Type="Self.VethubClaims" Multiplicity="*" />
@@ -96,6 +140,9 @@ warning 6002: The table/view 'PetSure.dbo.VethubClaims' does not have a primary 
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="getAttachments" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="PolicyNumb" Type="varchar" Mode="In" />
+        </Function>
         <Function Name="getClaims" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="PolicyNumber" Type="int" Mode="In" />
           <Parameter Name="PolicyHolder" Type="varchar" Mode="In" />
@@ -112,12 +159,19 @@ warning 6002: The table/view 'PetSure.dbo.VethubClaims' does not have a primary 
           <Parameter Name="Sort" Type="varchar" Mode="In" />
         </Function>
         <Function Name="getDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="PolicyNumber" Type="nchar" Mode="In" />
+          <Parameter Name="PolicyNumb" Type="varchar" Mode="In" />
         </Function>
         <EntityContainer Name="VethubClaimStoreContainer">
+          <EntitySet Name="Attachments" EntityType="Self.Attachments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ClaimDetails" EntityType="Self.ClaimDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PolicyHolder" EntityType="Self.PolicyHolder" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="VetPractise" EntityType="Self.VetPractise" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ClaimAttachments" EntityType="Self.ClaimAttachments" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ClaimAttachments].[policyHoldId] AS [policyHoldId], 
+    [ClaimAttachments].[attachedId] AS [attachedId]
+    FROM [dbo].[ClaimAttachments] AS [ClaimAttachments]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="VethubClaims" EntityType="Self.VethubClaims" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [VethubClaims].[policyHolderId] AS [policyHolderId], 
@@ -125,6 +179,14 @@ warning 6002: The table/view 'PetSure.dbo.VethubClaims' does not have a primary 
     [VethubClaims].[vetPractiseId] AS [vetPractiseId]
     FROM [dbo].[VethubClaims] AS [VethubClaims]</DefiningQuery>
           </EntitySet>
+          <AssociationSet Name="FK__ClaimAtta__attac__2A164134" Association="Self.FK__ClaimAtta__attac__2A164134">
+            <End Role="Attachments" EntitySet="Attachments" />
+            <End Role="ClaimAttachments" EntitySet="ClaimAttachments" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ClaimAtta__polic__29221CFB" Association="Self.FK__ClaimAtta__polic__29221CFB">
+            <End Role="PolicyHolder" EntitySet="PolicyHolder" />
+            <End Role="ClaimAttachments" EntitySet="ClaimAttachments" />
+          </AssociationSet>
           <AssociationSet Name="FK__ph_vp_cla__claim__70DDC3D8" Association="Self.FK__ph_vp_cla__claim__70DDC3D8">
             <End Role="ClaimDetails" EntitySet="ClaimDetails" />
             <End Role="VethubClaims" EntitySet="VethubClaims" />
@@ -143,6 +205,17 @@ warning 6002: The table/view 'PetSure.dbo.VethubClaims' does not have a primary 
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="VethubClaim" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Attachment">
+          <Key>
+            <PropertyRef Name="attachmentStatusId" />
+          </Key>
+          <Property Name="attachmentStatusId" Type="Int32" Nullable="false" />
+          <Property Name="attachmentId" Type="Int32" Nullable="false" />
+          <Property Name="attachmentSubmittedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="attachmentStatus" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="attachmentUrl" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="PolicyHolders" Relationship="Self.ClaimAttachments" FromRole="Attachments" ToRole="PolicyHolder" />
+        </EntityType>
         <EntityType Name="ClaimDetail">
           <Key>
             <PropertyRef Name="claimId" />
@@ -172,6 +245,7 @@ warning 6002: The table/view 'PetSure.dbo.VethubClaims' does not have a primary 
           <Property Name="phState" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="phPhone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="VethubClaims" Relationship="Self.FK__ph_vp_cla__polic__6FE99F9F" FromRole="PolicyHolder" ToRole="VethubClaims" />
+          <NavigationProperty Name="Attachments" Relationship="Self.ClaimAttachments" FromRole="PolicyHolder" ToRole="Attachments" />
         </EntityType>
         <EntityType Name="VetPractise">
           <Key>
@@ -238,7 +312,12 @@ warning 6002: The table/view 'PetSure.dbo.VethubClaims' does not have a primary 
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="ClaimAttachments">
+          <End Role="Attachments" Type="Self.Attachment" Multiplicity="*" />
+          <End Role="PolicyHolder" Type="Self.PolicyHolder" Multiplicity="*" />
+        </Association>
         <EntityContainer Name="PetSureEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Attachments" EntityType="Self.Attachment" />
           <EntitySet Name="ClaimDetails" EntityType="Self.ClaimDetail" />
           <EntitySet Name="PolicyHolders" EntityType="Self.PolicyHolder" />
           <EntitySet Name="VetPractises" EntityType="Self.VetPractise" />
@@ -255,6 +334,13 @@ warning 6002: The table/view 'PetSure.dbo.VethubClaims' does not have a primary 
             <End Role="VetPractise" EntitySet="VetPractises" />
             <End Role="VethubClaims" EntitySet="VethubClaims" />
           </AssociationSet>
+          <AssociationSet Name="ClaimAttachments" Association="Self.ClaimAttachments">
+            <End Role="Attachments" EntitySet="Attachments" />
+            <End Role="PolicyHolder" EntitySet="PolicyHolders" />
+          </AssociationSet>
+          <FunctionImport Name="getAttachments" ReturnType="Collection(VethubClaim.getAttachments_Result)">
+            <Parameter Name="PolicyNumb" Mode="In" Type="String" />
+          </FunctionImport>
           <FunctionImport Name="getClaims" ReturnType="Collection(VethubClaim.getClaims_Result)">
             <Parameter Name="PolicyNumber" Mode="In" Type="Int32" />
             <Parameter Name="PolicyHolder" Mode="In" Type="String" />
@@ -271,9 +357,15 @@ warning 6002: The table/view 'PetSure.dbo.VethubClaims' does not have a primary 
             <Parameter Name="Sort" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="getDetails" ReturnType="Collection(VethubClaim.getDetails_Result)">
-            <Parameter Name="PolicyNumber" Mode="In" Type="String" />
+            <Parameter Name="PolicyNumb" Mode="In" Type="String" />
           </FunctionImport>
         </EntityContainer>
+        <ComplexType Name="getAttachments_Result">
+          <Property Type="Int32" Name="attachmentId" Nullable="false" />
+          <Property Type="String" Name="attachmentStatus" Nullable="false" MaxLength="255" />
+          <Property Type="DateTime" Name="attachmentSubmittedDate" Nullable="false" Precision="23" />
+          <Property Type="String" Name="attachmentUrl" Nullable="true" MaxLength="255" />
+        </ComplexType>
         <ComplexType Name="getClaims_Result">
           <Property Type="Int64" Name="RowNum" Nullable="true" />
           <Property Type="Int32" Name="TotalCount" Nullable="true" />
@@ -290,37 +382,32 @@ warning 6002: The table/view 'PetSure.dbo.VethubClaims' does not have a primary 
           <Property Type="DateTime" Name="dateSubmitted" Nullable="false" Precision="23" />
         </ComplexType>
         <ComplexType Name="getDetails_Result">
-          <Property Type="String" Name="policyHolderId" Nullable="false" MaxLength="50" />
-          <Property Type="Int32" Name="claimDetailsId" Nullable="false" />
-          <Property Type="Int32" Name="vetPractiseId" Nullable="false" />
           <Property Type="String" Name="policyNumber" Nullable="false" MaxLength="50" />
           <Property Type="String" Name="policyHolder" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="pAddress" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="pSubrub" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="pPostcode" Nullable="false" />
+          <Property Type="String" Name="pState" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="pPhone" Nullable="false" MaxLength="50" />
           <Property Type="String" Name="insurer" Nullable="false" MaxLength="50" />
-          <Property Type="String" Name="phAddress" Nullable="false" MaxLength="50" />
-          <Property Type="String" Name="phSurburb" Nullable="false" MaxLength="50" />
-          <Property Type="Int32" Name="phPostCode" Nullable="false" />
-          <Property Type="String" Name="phState" Nullable="false" MaxLength="50" />
-          <Property Type="String" Name="phPhone" Nullable="false" MaxLength="50" />
-          <Property Type="Int32" Name="claimId" Nullable="false" />
-          <Property Type="String" Name="claimPetName" Nullable="false" MaxLength="50" />
-          <Property Type="String" Name="claimMicrochip" Nullable="false" MaxLength="50" />
-          <Property Type="String" Name="claimBreed" Nullable="false" MaxLength="50" />
-          <Property Type="Decimal" Name="claimAmount" Nullable="false" Precision="13" Scale="2" />
-          <Property Type="Int32" Name="claimVetHubRef" Nullable="false" />
-          <Property Type="Int32" Name="claimRefNo" Nullable="false" />
-          <Property Type="Int32" Name="claimNo" Nullable="false" />
-          <Property Type="String" Name="claimStatus" Nullable="false" MaxLength="50" />
-          <Property Type="DateTime" Name="claimSubmittedDate" Nullable="false" Precision="23" />
-          <Property Type="Int32" Name="vpId" Nullable="false" />
-          <Property Type="String" Name="vetPractise" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="vetPractice" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="petName" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="microchip" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="breed" Nullable="false" MaxLength="50" />
+          <Property Type="Decimal" Name="amount" Nullable="false" Precision="13" Scale="2" />
+          <Property Type="Int32" Name="vetHubRef" Nullable="false" />
+          <Property Type="Int32" Name="claimRef" Nullable="false" />
+          <Property Type="Int32" Name="claim" Nullable="false" />
+          <Property Type="String" Name="status" Nullable="false" MaxLength="50" />
+          <Property Type="DateTime" Name="dateSubmitted" Nullable="false" Precision="23" />
           <Property Type="String" Name="submittedBy" Nullable="false" MaxLength="50" />
-          <Property Type="String" Name="vpAddress" Nullable="false" MaxLength="50" />
-          <Property Type="String" Name="vpSuburb" Nullable="false" MaxLength="50" />
-          <Property Type="Int32" Name="vpPostCode" Nullable="false" />
-          <Property Type="String" Name="vpState" Nullable="false" MaxLength="50" />
-          <Property Type="String" Name="vpPhone" Nullable="false" MaxLength="50" />
-          <Property Type="String" Name="vpEmail" Nullable="false" MaxLength="255" />
-          <Property Type="String" Name="VPMS_Version" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="vAddress" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="vSubrub" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="vPostcode" Nullable="false" />
+          <Property Type="String" Name="vState" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="vPhone" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="email" Nullable="false" MaxLength="255" />
+          <Property Type="String" Name="vpms" Nullable="false" MaxLength="50" />
         </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
@@ -328,6 +415,17 @@ warning 6002: The table/view 'PetSure.dbo.VethubClaims' does not have a primary 
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="VethubClaimStoreContainer" CdmEntityContainer="PetSureEntities">
+          <EntitySetMapping Name="Attachments">
+            <EntityTypeMapping TypeName="VethubClaim.Attachment">
+              <MappingFragment StoreEntitySet="Attachments">
+                <ScalarProperty Name="attachmentStatusId" ColumnName="attachmentStatusId" />
+                <ScalarProperty Name="attachmentId" ColumnName="attachmentId" />
+                <ScalarProperty Name="attachmentSubmittedDate" ColumnName="attachmentSubmittedDate" />
+                <ScalarProperty Name="attachmentStatus" ColumnName="attachmentStatus" />
+                <ScalarProperty Name="attachmentUrl" ColumnName="attachmentUrl" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="ClaimDetails">
             <EntityTypeMapping TypeName="VethubClaim.ClaimDetail">
               <MappingFragment StoreEntitySet="ClaimDetails">
@@ -383,6 +481,24 @@ warning 6002: The table/view 'PetSure.dbo.VethubClaims' does not have a primary 
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <AssociationSetMapping Name="ClaimAttachments" TypeName="VethubClaim.ClaimAttachments" StoreEntitySet="ClaimAttachments">
+            <EndProperty Name="Attachments">
+              <ScalarProperty Name="attachmentStatusId" ColumnName="attachedId" />
+            </EndProperty>
+            <EndProperty Name="PolicyHolder">
+              <ScalarProperty Name="policyNumber" ColumnName="policyHoldId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <FunctionImportMapping FunctionImportName="getAttachments" FunctionName="VethubClaim.Store.getAttachments">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="VethubClaim.getAttachments_Result">
+                <ScalarProperty Name="attachmentId" ColumnName="attachmentId" />
+                <ScalarProperty Name="attachmentStatus" ColumnName="attachmentStatus" />
+                <ScalarProperty Name="attachmentSubmittedDate" ColumnName="attachmentSubmittedDate" />
+                <ScalarProperty Name="attachmentUrl" ColumnName="attachmentUrl" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="getClaims" FunctionName="VethubClaim.Store.getClaims">
             <ResultMapping>
               <ComplexTypeMapping TypeName="VethubClaim.getClaims_Result">
@@ -405,37 +521,32 @@ warning 6002: The table/view 'PetSure.dbo.VethubClaims' does not have a primary 
           <FunctionImportMapping FunctionImportName="getDetails" FunctionName="VethubClaim.Store.getDetails">
             <ResultMapping>
               <ComplexTypeMapping TypeName="VethubClaim.getDetails_Result">
-                <ScalarProperty Name="policyHolderId" ColumnName="policyHolderId" />
-                <ScalarProperty Name="claimDetailsId" ColumnName="claimDetailsId" />
-                <ScalarProperty Name="vetPractiseId" ColumnName="vetPractiseId" />
                 <ScalarProperty Name="policyNumber" ColumnName="policyNumber" />
                 <ScalarProperty Name="policyHolder" ColumnName="policyHolder" />
+                <ScalarProperty Name="pAddress" ColumnName="pAddress" />
+                <ScalarProperty Name="pSubrub" ColumnName="pSubrub" />
+                <ScalarProperty Name="pPostcode" ColumnName="pPostcode" />
+                <ScalarProperty Name="pState" ColumnName="pState" />
+                <ScalarProperty Name="pPhone" ColumnName="pPhone" />
                 <ScalarProperty Name="insurer" ColumnName="insurer" />
-                <ScalarProperty Name="phAddress" ColumnName="phAddress" />
-                <ScalarProperty Name="phSurburb" ColumnName="phSurburb" />
-                <ScalarProperty Name="phPostCode" ColumnName="phPostCode" />
-                <ScalarProperty Name="phState" ColumnName="phState" />
-                <ScalarProperty Name="phPhone" ColumnName="phPhone" />
-                <ScalarProperty Name="claimId" ColumnName="claimId" />
-                <ScalarProperty Name="claimPetName" ColumnName="claimPetName" />
-                <ScalarProperty Name="claimMicrochip" ColumnName="claimMicrochip" />
-                <ScalarProperty Name="claimBreed" ColumnName="claimBreed" />
-                <ScalarProperty Name="claimAmount" ColumnName="claimAmount" />
-                <ScalarProperty Name="claimVetHubRef" ColumnName="claimVetHubRef" />
-                <ScalarProperty Name="claimRefNo" ColumnName="claimRefNo" />
-                <ScalarProperty Name="claimNo" ColumnName="claimNo" />
-                <ScalarProperty Name="claimStatus" ColumnName="claimStatus" />
-                <ScalarProperty Name="claimSubmittedDate" ColumnName="claimSubmittedDate" />
-                <ScalarProperty Name="vpId" ColumnName="vpId" />
-                <ScalarProperty Name="vetPractise" ColumnName="vetPractise" />
+                <ScalarProperty Name="vetPractice" ColumnName="vetPractice" />
+                <ScalarProperty Name="petName" ColumnName="petName" />
+                <ScalarProperty Name="microchip" ColumnName="microchip" />
+                <ScalarProperty Name="breed" ColumnName="breed" />
+                <ScalarProperty Name="amount" ColumnName="amount" />
+                <ScalarProperty Name="vetHubRef" ColumnName="vetHubRef" />
+                <ScalarProperty Name="claimRef" ColumnName="claimRef" />
+                <ScalarProperty Name="claim" ColumnName="claim" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="dateSubmitted" ColumnName="dateSubmitted" />
                 <ScalarProperty Name="submittedBy" ColumnName="submittedBy" />
-                <ScalarProperty Name="vpAddress" ColumnName="vpAddress" />
-                <ScalarProperty Name="vpSuburb" ColumnName="vpSuburb" />
-                <ScalarProperty Name="vpPostCode" ColumnName="vpPostCode" />
-                <ScalarProperty Name="vpState" ColumnName="vpState" />
-                <ScalarProperty Name="vpPhone" ColumnName="vpPhone" />
-                <ScalarProperty Name="vpEmail" ColumnName="vpEmail" />
-                <ScalarProperty Name="VPMS_Version" ColumnName="VPMS&amp;Version" />
+                <ScalarProperty Name="vAddress" ColumnName="vAddress" />
+                <ScalarProperty Name="vSubrub" ColumnName="vSubrub" />
+                <ScalarProperty Name="vPostcode" ColumnName="vPostcode" />
+                <ScalarProperty Name="vState" ColumnName="vState" />
+                <ScalarProperty Name="vPhone" ColumnName="vPhone" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="vpms" ColumnName="vpms" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>

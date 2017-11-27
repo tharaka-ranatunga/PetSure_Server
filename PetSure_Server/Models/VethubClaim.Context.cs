@@ -27,10 +27,20 @@ namespace PetSure_Server.Models
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<Attachment> Attachments { get; set; }
         public virtual DbSet<ClaimDetail> ClaimDetails { get; set; }
         public virtual DbSet<PolicyHolder> PolicyHolders { get; set; }
         public virtual DbSet<VetPractise> VetPractises { get; set; }
         public virtual DbSet<VethubClaim> VethubClaims { get; set; }
+    
+        public virtual ObjectResult<getAttachments_Result> getAttachments(string policyNumb)
+        {
+            var policyNumbParameter = policyNumb != null ?
+                new ObjectParameter("PolicyNumb", policyNumb) :
+                new ObjectParameter("PolicyNumb", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<getAttachments_Result>("getAttachments", policyNumbParameter);
+        }
     
         public virtual ObjectResult<getClaims_Result> getClaims(Nullable<int> policyNumber, string policyHolder, string vetPractise, string petName, string status, Nullable<int> vethubRefNo, Nullable<int> claimRefNo, Nullable<int> claimNo, Nullable<System.DateTime> startDate, Nullable<System.DateTime> endDate, Nullable<int> startIndex, Nullable<int> endIndex, string sort)
         {
@@ -89,13 +99,13 @@ namespace PetSure_Server.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<getClaims_Result>("getClaims", policyNumberParameter, policyHolderParameter, vetPractiseParameter, petNameParameter, statusParameter, vethubRefNoParameter, claimRefNoParameter, claimNoParameter, startDateParameter, endDateParameter, startIndexParameter, endIndexParameter, sortParameter);
         }
     
-        public virtual ObjectResult<getDetails_Result> getDetails(string policyNumber)
+        public virtual ObjectResult<getDetails_Result> getDetails(string policyNumb)
         {
-            var policyNumberParameter = policyNumber != null ?
-                new ObjectParameter("PolicyNumber", policyNumber) :
-                new ObjectParameter("PolicyNumber", typeof(string));
+            var policyNumbParameter = policyNumb != null ?
+                new ObjectParameter("PolicyNumb", policyNumb) :
+                new ObjectParameter("PolicyNumb", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<getDetails_Result>("getDetails", policyNumberParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<getDetails_Result>("getDetails", policyNumbParameter);
         }
     }
 }

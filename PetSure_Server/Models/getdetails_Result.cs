@@ -13,36 +13,31 @@ namespace PetSure_Server.Models
     
     public partial class getDetails_Result
     {
-        public string policyHolderId { get; set; }
-        public int claimDetailsId { get; set; }
-        public int vetPractiseId { get; set; }
         public string policyNumber { get; set; }
         public string policyHolder { get; set; }
+        public string pAddress { get; set; }
+        public string pSubrub { get; set; }
+        public int pPostcode { get; set; }
+        public string pState { get; set; }
+        public string pPhone { get; set; }
         public string insurer { get; set; }
-        public string phAddress { get; set; }
-        public string phSurburb { get; set; }
-        public int phPostCode { get; set; }
-        public string phState { get; set; }
-        public string phPhone { get; set; }
-        public int claimId { get; set; }
-        public string claimPetName { get; set; }
-        public string claimMicrochip { get; set; }
-        public string claimBreed { get; set; }
-        public decimal claimAmount { get; set; }
-        public int claimVetHubRef { get; set; }
-        public int claimRefNo { get; set; }
-        public int claimNo { get; set; }
-        public string claimStatus { get; set; }
-        public System.DateTime claimSubmittedDate { get; set; }
-        public int vpId { get; set; }
-        public string vetPractise { get; set; }
+        public string vetPractice { get; set; }
+        public string petName { get; set; }
+        public string microchip { get; set; }
+        public string breed { get; set; }
+        public decimal amount { get; set; }
+        public int vetHubRef { get; set; }
+        public int claimRef { get; set; }
+        public int claim { get; set; }
+        public string status { get; set; }
+        public System.DateTime dateSubmitted { get; set; }
         public string submittedBy { get; set; }
-        public string vpAddress { get; set; }
-        public string vpSuburb { get; set; }
-        public int vpPostCode { get; set; }
-        public string vpState { get; set; }
-        public string vpPhone { get; set; }
-        public string vpEmail { get; set; }
-        public string VPMS_Version { get; set; }
+        public string vAddress { get; set; }
+        public string vSubrub { get; set; }
+        public int vPostcode { get; set; }
+        public string vState { get; set; }
+        public string vPhone { get; set; }
+        public string email { get; set; }
+        public string vpms { get; set; }
     }
 }

@@ -18,6 +18,7 @@ namespace PetSure_Server.Models
         public PolicyHolder()
         {
             this.VethubClaims = new HashSet<VethubClaim>();
+            this.Attachments = new HashSet<Attachment>();
         }
     
         public string policyNumber { get; set; }
@@ -31,5 +32,7 @@ namespace PetSure_Server.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<VethubClaim> VethubClaims { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Attachment> Attachments { get; set; }
     }
 }
